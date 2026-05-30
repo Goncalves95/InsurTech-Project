@@ -420,7 +420,7 @@ See [LICENSE](./LICENSE) for full terms.
 permitted. Any reproduction, distribution, commercial use, or derivative work
 requires the author's prior written consent.
 
-For permissions and licensing inquiries: **rrvnna@gmail.com**
+For permissions and licensing inquiries: **create@raigonlab.com**
 
 ---
 
