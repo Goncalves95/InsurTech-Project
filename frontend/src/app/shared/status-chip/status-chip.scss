@@ -1,0 +1,39 @@
+.chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+
+  &--approved {
+    background-color: #e6f4ea;
+    color: #1e7e34;
+  }
+
+  &--rejected {
+    background-color: #fce8e6;
+    color: #c5221f;
+  }
+
+  &--manual {
+    background-color: #fff3e0;
+    color: #e65100;
+  }
+
+  &--pending-validation {
+    background-color: #e8f0fe;
+    color: #1565c0;
+  }
+
+  &--processing {
+    background-color: #f3e5f5;
+    color: #6a1b9a;
+  }
+
+  &--default {
+    background-color: #f1f3f4;
+    color: #5f6368;
+  }
+}
