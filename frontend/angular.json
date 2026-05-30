@@ -85,6 +85,16 @@
             "setupFiles": [
               "src/test-setup.ts"
             ]
+          },
+          "configurations": {
+            "coverage": {
+              "coverage": true,
+              "coverageReporters": [
+                "html",
+                "lcov",
+                "text-summary"
+              ]
+            }
           }
         }
       }
