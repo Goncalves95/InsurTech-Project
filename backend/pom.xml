@@ -24,6 +24,8 @@
         <testcontainers.version>1.20.4</testcontainers.version>
         <springdoc.version>2.7.0</springdoc.version>
         <liquibase.version>4.30.0</liquibase.version>
+        <azure.formrecognizer.version>4.1.9</azure.formrecognizer.version>
+        <azure.storage.blob.version>12.29.1</azure.storage.blob.version>
     </properties>
 
     <dependencies>
@@ -94,6 +96,20 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- ===== AZURE DOCUMENT INTELLIGENCE (Form Recognizer SDK) ===== -->
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-ai-formrecognizer</artifactId>
+            <version>${azure.formrecognizer.version}</version>
+        </dependency>
+
+        <!-- ===== AZURE BLOB STORAGE ===== -->
+        <dependency>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-storage-blob</artifactId>
+            <version>${azure.storage.blob.version}</version>
         </dependency>
 
         <!-- ===== API DOCS ===== -->

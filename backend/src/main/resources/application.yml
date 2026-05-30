@@ -70,6 +70,14 @@ springdoc:
     path: /swagger-ui.html
     operations-sorter: method
 
+azure:
+  document-intelligence:
+    endpoint: ${AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT:http://stub}
+    key: ${AZURE_DOCUMENT_INTELLIGENCE_KEY:stub-key}
+  storage:
+    connection-string: ${AZURE_STORAGE_CONNECTION_STRING:stub}
+    container-name: ${AZURE_STORAGE_CONTAINER_NAME:claims}
+
 logging:
   level:
     ch.insurtech.platform: INFO
