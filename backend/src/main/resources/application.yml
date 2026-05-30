@@ -78,6 +78,19 @@ azure:
     connection-string: ${AZURE_STORAGE_CONNECTION_STRING:stub}
     container-name: ${AZURE_STORAGE_CONTAINER_NAME:claims}
 
+sendgrid:
+  api-key: ${SENDGRID_API_KEY:stub-key}
+  from-email: ${SENDGRID_FROM_EMAIL:noreply@insurtech.local}
+  from-name: ${SENDGRID_FROM_NAME:InsurTech Platform}
+
+insurtech:
+  keycloak:
+    admin:
+      url: ${KEYCLOAK_URL:http://localhost:8180}
+      realm: ${KEYCLOAK_REALM:insurtech}
+      client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:insurtech-backend}
+      client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:change-me}
+
 logging:
   level:
     ch.insurtech.platform: INFO

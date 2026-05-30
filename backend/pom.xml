@@ -26,6 +26,7 @@
         <liquibase.version>4.30.0</liquibase.version>
         <azure.formrecognizer.version>4.1.9</azure.formrecognizer.version>
         <azure.storage.blob.version>12.29.1</azure.storage.blob.version>
+        <sendgrid.version>4.10.3</sendgrid.version>
     </properties>
 
     <dependencies>
@@ -110,6 +111,13 @@
             <groupId>com.azure</groupId>
             <artifactId>azure-storage-blob</artifactId>
             <version>${azure.storage.blob.version}</version>
+        </dependency>
+
+        <!-- ===== SENDGRID EMAIL ===== -->
+        <dependency>
+            <groupId>com.sendgrid</groupId>
+            <artifactId>sendgrid-java</artifactId>
+            <version>${sendgrid.version}</version>
         </dependency>
 
         <!-- ===== API DOCS ===== -->
