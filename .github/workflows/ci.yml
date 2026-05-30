@@ -1,0 +1,55 @@
+name: InsurTech Platform CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    name: Build, Test & Verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 (Temurin)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build and run all tests
+        # -B: batch mode (no ANSI colours in logs)
+        # --no-transfer-progress: suppresses noisy download progress bars
+        # TestContainers will spin up real PostgreSQL + Kafka via Docker
+        # (ubuntu-latest runners include Docker out of the box)
+        run: mvn verify -B --no-transfer-progress
+        working-directory: backend
+
+      - name: Upload JaCoCo coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jacoco-coverage-report
+          path: backend/target/site/jacoco/
+          retention-days: 14
+
+      - name: Upload Surefire test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: surefire-test-results
+          path: backend/target/surefire-reports/
+          retention-days: 14
+
+      - name: Upload Failsafe integration test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: failsafe-integration-test-results
+          path: backend/target/failsafe-reports/
+          retention-days: 14
