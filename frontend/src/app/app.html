@@ -1,0 +1,30 @@
+<mat-toolbar color="primary">
+  <span class="brand" routerLink="/">InsurTech Platform</span>
+  <span class="spacer"></span>
+
+  @if (authService.authenticated()) {
+    <span class="username">{{ authService.username() }}</span>
+
+    @if (authService.isBackoffice()) {
+      <button mat-button routerLink="/backoffice/review-queue">
+        <mat-icon>admin_panel_settings</mat-icon>
+        Backoffice
+      </button>
+    }
+
+    <button mat-button routerLink="/portal/claims">
+      <mat-icon>receipt_long</mat-icon>
+      My Claims
+    </button>
+
+    <button mat-icon-button (click)="authService.logout()" aria-label="Logout">
+      <mat-icon>logout</mat-icon>
+    </button>
+  } @else {
+    <button mat-raised-button (click)="authService.login()">Login</button>
+  }
+</mat-toolbar>
+
+<main class="content">
+  <router-outlet />
+</main>
