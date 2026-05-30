@@ -1,0 +1,17 @@
+spring:
+  jpa:
+    show-sql: true
+
+  kafka:
+    consumer:
+      auto-offset-reset: earliest
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9999/auth  # overridden per-test with @TestPropertySource
+
+logging:
+  level:
+    ch.insurtech.platform: DEBUG
