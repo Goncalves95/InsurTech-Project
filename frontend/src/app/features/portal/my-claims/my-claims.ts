@@ -35,7 +35,14 @@ export class MyClaims implements OnInit {
   readonly displayedColumns = ['submittedAt', 'status', 'totalAmount', 'reimbursableAmount'];
 
   ngOnInit(): void {
-    this.claimsApi.getByPolicyHolder(this.authService.policyHolderId).subscribe({
+    const policyHolderId = this.authService.policyHolderId;
+    if (!policyHolderId) {
+      this.error.set('Session not ready. Please refresh the page.');
+      this.loading.set(false);
+      return;
+    }
+
+    this.claimsApi.getByPolicyHolder(policyHolderId).subscribe({
       next: claims => {
         this.claims.set(claims);
         this.loading.set(false);

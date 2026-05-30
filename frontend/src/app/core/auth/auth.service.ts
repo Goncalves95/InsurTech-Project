@@ -13,6 +13,7 @@ export class AuthService {
   private readonly _authenticated = signal(false);
   private readonly _username = signal<string | undefined>(undefined);
   private readonly _roles = signal<string[]>([]);
+  private readonly _policyHolderId = signal<string>('');
 
   readonly authenticated = this._authenticated.asReadonly();
   readonly username = this._username.asReadonly();
@@ -20,8 +21,7 @@ export class AuthService {
 
   async init(): Promise<void> {
     const authenticated = await this.kc.init({
-      onLoad: 'check-sso',
-      silentCheckSsoRedirectUri: `${window.location.origin}/silent-check-sso.html`,
+      onLoad: 'login-required',
       pkceMethod: 'S256',
     });
 
@@ -29,6 +29,14 @@ export class AuthService {
     if (authenticated) {
       this._username.set(this.kc.tokenParsed?.['preferred_username']);
       this._roles.set(this.kc.realmAccess?.roles ?? []);
+
+      // Access tokens in this realm are opaque, so kc.subject and kc.tokenParsed are null.
+      // The subject is reliably available in the ID token (idTokenParsed.sub).
+      const idToken = this.kc.idTokenParsed as Record<string, unknown> | undefined;
+      const accessToken = this.kc.tokenParsed as Record<string, unknown> | undefined;
+      this._policyHolderId.set(
+        (this.kc.subject ?? idToken?.['sub'] ?? accessToken?.['sub'] ?? '') as string,
+      );
     }
   }
 
@@ -46,6 +54,6 @@ export class AuthService {
   }
 
   get policyHolderId(): string {
-    return this.kc.tokenParsed?.['sub'] ?? '';
+    return this._policyHolderId();
   }
 }
