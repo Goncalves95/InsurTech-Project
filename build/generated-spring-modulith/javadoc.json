@@ -1,0 +1,1 @@
+[{"name":"ch.insurtech.platform.DockerAvailableCondition","comment":"JUnit 5 ExecutionCondition that disables a test class when Docker is not available. Evaluated before SpringExtension loads the application context, so disabled tests incur zero startup cost and produce a clean \"skipped\" result in Failsafe reports."}]
