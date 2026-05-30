@@ -1,0 +1,49 @@
+<mat-card class="submit-card">
+  <mat-card-header>
+    <mat-card-title>Submit New Claim</mat-card-title>
+    <mat-card-subtitle>Upload your medical invoice (PDF, JPG, PNG)</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="upload-area">
+        <input
+          #fileInput
+          type="file"
+          accept=".pdf,.jpg,.jpeg,.png"
+          hidden
+          (change)="onFileSelected($event)"
+        />
+        <button type="button" mat-stroked-button (click)="fileInput.click()">
+          <mat-icon>upload_file</mat-icon>
+          Choose File
+        </button>
+        @if (selectedFile()) {
+          <span class="filename">{{ selectedFile()!.name }}</span>
+        } @else {
+          <span class="hint">No file selected</span>
+        }
+      </div>
+
+      @if (submitError()) {
+        <p class="error">{{ submitError() }}</p>
+      }
+
+      <div class="actions">
+        <button mat-button type="button" routerLink="/portal/claims">Cancel</button>
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="form.invalid || submitting()"
+        >
+          @if (submitting()) {
+            <mat-progress-spinner diameter="20" mode="indeterminate" />
+          } @else {
+            Submit Claim
+          }
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

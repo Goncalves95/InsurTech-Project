@@ -1,0 +1,33 @@
+.submit-card {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.upload-area {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+}
+
+.filename {
+  font-weight: 500;
+}
+
+.hint {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 14px;
+}
+
+.error {
+  color: var(--mat-sys-error);
+  font-size: 14px;
+  margin: 8px 0;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}

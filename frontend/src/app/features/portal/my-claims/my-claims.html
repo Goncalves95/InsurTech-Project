@@ -1,0 +1,44 @@
+<div class="page-header">
+  <h1>My Claims</h1>
+  <button mat-raised-button color="primary" routerLink="/portal/submit">
+    <mat-icon>add</mat-icon>
+    Submit New Claim
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="center">
+    <mat-progress-spinner mode="indeterminate" />
+  </div>
+} @else if (error()) {
+  <p class="error">{{ error() }}</p>
+} @else if (claims().length === 0) {
+  <p class="empty">No claims submitted yet.</p>
+} @else {
+  <mat-table [dataSource]="claims()">
+    <ng-container matColumnDef="submittedAt">
+      <mat-header-cell *matHeaderCellDef>Submitted</mat-header-cell>
+      <mat-cell *matCellDef="let c">{{ c.submittedAt | date: 'short' }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+      <mat-cell *matCellDef="let c">
+        <app-status-chip [status]="c.status" />
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="totalAmount">
+      <mat-header-cell *matHeaderCellDef>Total (CHF)</mat-header-cell>
+      <mat-cell *matCellDef="let c">{{ c.totalAmount | currency: 'CHF' }}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="reimbursableAmount">
+      <mat-header-cell *matHeaderCellDef>Reimbursable (CHF)</mat-header-cell>
+      <mat-cell *matCellDef="let c">{{ c.reimbursableAmount | currency: 'CHF' }}</mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns" />
+    <mat-row *matRowDef="let row; columns: displayedColumns" />
+  </mat-table>
+}
