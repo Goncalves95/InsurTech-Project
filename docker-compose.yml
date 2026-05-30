@@ -1,0 +1,140 @@
+services:
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # INFRASTRUCTURE (run alone for local development)
+  #   docker-compose up postgres kafka keycloak
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: insurtech-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: insurtech
+      POSTGRES_USER: insurtech
+      POSTGRES_PASSWORD: insurtech
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U insurtech -d insurtech"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - insurtech-net
+
+  kafka:
+    image: confluentinc/cp-kafka:7.7.1
+    container_name: insurtech-kafka
+    restart: unless-stopped
+    hostname: kafka
+    environment:
+      # KRaft mode — no ZooKeeper required
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:29092,PLAINTEXT_HOST://0.0.0.0:9092,CONTROLLER://0.0.0.0:29093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:29093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      # Fixed cluster ID — must be a base64-encoded UUID (change only if resetting state)
+      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qg=="
+    ports:
+      - "9092:9092"   # host access (local tools, Kafka UI)
+      - "29092:29092" # inter-container access
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
+    networks:
+      - insurtech-net
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: insurtech-keycloak
+    restart: unless-stopped
+    command: start-dev --import-realm
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_STRICT_HTTPS: "false"
+      # Use the container name so the 'iss' claim in tokens matches what
+      # the backend validates against (both resolve 'keycloak' on the Docker network)
+      KC_HOSTNAME: keycloak
+    ports:
+      - "8180:8080"   # admin console + token endpoint for host tools
+    volumes:
+      - ./keycloak/insurtech-realm.json:/opt/keycloak/data/import/insurtech-realm.json:ro
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/health/ready || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 15
+      start_period: 45s
+    networks:
+      - insurtech-net
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # APPLICATION (omit this service when running Spring Boot locally via IDE/Maven)
+  #   Full demo:   docker-compose up
+  #   Infra only:  docker-compose up postgres kafka keycloak
+  # ─────────────────────────────────────────────────────────────────────────────
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: insurtech-backend
+    restart: unless-stopped
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/insurtech
+      DB_USERNAME: insurtech
+      DB_PASSWORD: insurtech
+      KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      # Must match KC_HOSTNAME + internal port so 'iss' validation passes
+      JWT_ISSUER_URI: http://keycloak:8080/realms/insurtech
+      # Azure services — set real values in docker-compose.override.yml
+      AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT: ${AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT:-http://stub}
+      AZURE_DOCUMENT_INTELLIGENCE_KEY: ${AZURE_DOCUMENT_INTELLIGENCE_KEY:-stub-key}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING:-stub}
+      AZURE_STORAGE_CONTAINER_NAME: ${AZURE_STORAGE_CONTAINER_NAME:-claims}
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    networks:
+      - insurtech-net
+
+volumes:
+  postgres_data:
+  kafka_data:
+
+networks:
+  insurtech-net:
+    driver: bridge

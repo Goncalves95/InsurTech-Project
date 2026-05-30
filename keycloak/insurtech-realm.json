@@ -1,0 +1,105 @@
+{
+  "realm": "insurtech",
+  "enabled": true,
+  "displayName": "InsurTech Platform",
+  "displayNameHtml": "<b>InsurTech</b> Platform",
+  "loginWithEmailAllowed": true,
+  "registrationAllowed": false,
+  "resetPasswordAllowed": false,
+  "bruteForceProtected": true,
+  "accessTokenLifespan": 300,
+  "ssoSessionIdleTimeout": 1800,
+  "ssoSessionMaxLifespan": 36000,
+
+  "roles": {
+    "realm": [
+      {
+        "name": "customer",
+        "description": "Regular policy holder — can submit and view own claims"
+      },
+      {
+        "name": "backoffice",
+        "description": "Claims analyst — access to manual review queue and claim adjudication"
+      }
+    ]
+  },
+
+  "clientScopes": [
+    {
+      "name": "backoffice",
+      "description": "Grants access to backoffice-restricted API endpoints",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "false"
+      }
+    }
+  ],
+
+  "clients": [
+    {
+      "clientId": "insurtech-frontend",
+      "name": "InsurTech Angular SPA",
+      "description": "Public PKCE client for the Angular frontend",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "protocol": "openid-connect",
+      "redirectUris": [
+        "http://localhost:4200/*",
+        "http://localhost:8080/*"
+      ],
+      "webOrigins": [
+        "http://localhost:4200",
+        "http://localhost:8080"
+      ],
+      "defaultClientScopes": [
+        "openid",
+        "profile",
+        "email"
+      ],
+      "optionalClientScopes": [
+        "backoffice"
+      ]
+    }
+  ],
+
+  "users": [
+    {
+      "username": "backoffice",
+      "email": "backoffice@insurtech-demo.ch",
+      "firstName": "Backoffice",
+      "lastName": "Analyst",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "backoffice123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["backoffice"]
+    },
+    {
+      "username": "customer",
+      "email": "customer@insurtech-demo.ch",
+      "firstName": "Maria",
+      "lastName": "Muster",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "customer123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["customer"]
+    }
+  ]
+}
