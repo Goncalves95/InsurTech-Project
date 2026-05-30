@@ -40,12 +40,13 @@ that pipeline:
 | Capability | Description |
 |---|---|
 | **Invoice ingestion** | Customers submit PDF/image invoices via a secure portal |
-| **OCR extraction** | Document Intelligence extracts amounts, Tarmed codes, provider details |
+| **OCR extraction** | Azure Document Intelligence extracts amounts, Tarmed codes, provider details |
 | **Rules engine** | Strategy-based validator checks franchise, coverage limits and Tarmed codes |
 | **Event-driven flow** | Kafka decouples each processing stage; at-least-once delivery guaranteed |
 | **Backoffice dashboard** | Claims flagged for manual review appear in a role-gated queue |
 | **Audit trail** | Every state transition is timestamped and user-stamped via JPA Auditing |
 | **Security** | OAuth2/OIDC with Keycloak, PKCE for SPAs, role-scoped endpoints |
+| **Email notifications** | SendGrid dispatches approval/review notifications after every decision |
 
 ---
 
@@ -60,13 +61,14 @@ that pipeline:
 │   ┌──────────────────────┐        ┌────────────────────────────┐   │
 │   │   Angular 21 SPA     │        │     Keycloak 26 (OIDC)     │   │
 │   │   Material 3 UI      │◄──────►│  Realm: insurtech          │   │
-│   │   PKCE / silent SSO  │        │  Roles: customer, backoffice│  │
+│   │   PKCE S256          │        │  Roles: customer, backoffice│  │
 │   └──────────┬───────────┘        └────────────────────────────┘   │
+│         served by nginx            OAuth2 / ID token (opaque AT)   │
 └──────────────┼──────────────────────────────────────────────────────┘
                │ Bearer JWT
                ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         Backend (Spring Boot 3.4)                   │
+│                     Backend (Spring Boot 3.4)                       │
 │                                                                     │
 │  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────────────────┐ │
 │  │  claim   │  │   ocr    │  │  rules   │  │   notification     │ │
@@ -111,7 +113,7 @@ ClaimApplicationService ──► status: PENDING_OCR
                           └──────────┬────────────────┘
                                      ▼
                             NotificationService
-                         (email dispatch + audit log)
+                         (SendGrid email dispatch)
 ```
 
 Spring Modulith's **event publication log** persists every event before dispatch.
@@ -134,10 +136,13 @@ no claim is silently dropped.
 | Messaging | Apache Kafka (KRaft, no ZooKeeper) | 3.7 |
 | Security | Spring Security OAuth2 Resource Server | — |
 | Identity Provider | Keycloak | 26 |
+| OCR | Azure Document Intelligence (prebuilt-invoice) | 4.1 |
+| Blob storage | Azure Blob Storage | 12.29 |
+| Email | SendGrid Java SDK | 4.10 |
 | API Docs | SpringDoc OpenAPI / Swagger UI | 2.7 |
 | Build | Maven | 3.9 |
 | Tests | JUnit 5 + Mockito + AssertJ + TestContainers | — |
-| Coverage | JaCoCo (≥ 70% line coverage enforced) | — |
+| Coverage | JaCoCo (≥ 70% line coverage enforced in CI) | — |
 
 ### Frontend
 
@@ -145,19 +150,22 @@ no claim is silently dropped.
 |---|---|---|
 | Framework | Angular (standalone, signals-based) | 21.2 |
 | UI Library | Angular Material (M3, azure-blue theme) | 21.2 |
-| Auth | keycloak-js (PKCE S256, silent SSO) | 26.2 |
+| Auth | keycloak-js (PKCE S256) | 26.2 |
 | HTTP | Angular HttpClient + functional interceptor | — |
 | Reactive state | Angular Signals (`signal`, `computed`) | — |
 | Build tool | esbuild (`@angular/build:application`) | — |
-| Test runner | Vitest | 4 |
+| Unit tests | Vitest + Angular Testing Library | 4 / 19 |
+| E2E tests | Playwright | 1.60 |
+| Coverage | @vitest/coverage-v8 (87%+ statements) | — |
+| Server (prod) | nginx 1.27 (Docker multi-stage) | — |
 | Language | TypeScript | 5.9 |
 
 ### Infrastructure & DevOps
 
 | Component | Technology |
 |---|---|
-| Containerisation | Docker + Docker Compose |
-| CI/CD | GitHub Actions |
+| Containerisation | Docker + Docker Compose (5 services) |
+| CI/CD | GitHub Actions — parallel jobs + ci-gate branch protection |
 | Code style | Prettier + EditorConfig |
 
 ---
@@ -168,20 +176,20 @@ no claim is silently dropped.
 InsurTech-Project/
 ├── .github/
 │   └── workflows/
-│       └── ci.yml              # Parallel backend + frontend CI jobs
+│       └── ci.yml              # Parallel backend + frontend jobs + ci-gate
 │
 ├── backend/                    # Spring Boot modular monolith
 │   ├── src/main/java/ch/insurtech/platform/
 │   │   ├── claim/              # Claim ingestion, lifecycle, REST API
-│   │   ├── ocr/                # OCR extraction (stub → Azure Doc Intelligence)
+│   │   ├── ocr/                # OCR extraction (stub + AzureDocumentIntelligenceAdapter)
 │   │   ├── rules/              # Strategy-based validation engine
-│   │   ├── notification/       # Event-driven email dispatch
-│   │   └── shared/             # Exceptions, GlobalExceptionHandler, audit, config
+│   │   ├── notification/       # SendGrid email + Keycloak user resolver
+│   │   └── shared/             # Exceptions, GlobalExceptionHandler, audit, AzureConfig
 │   ├── src/main/resources/
 │   │   ├── application.yml
-│   │   └── db/changelog/       # Liquibase migrations
-│   ├── src/test/               # Unit tests (*Test.java) + ITs (*IT.java)
-│   ├── Dockerfile              # Multi-stage, non-root, JVM container flags
+│   │   └── db/changelog/       # Liquibase migrations (V001–V003)
+│   ├── src/test/               # Unit tests (*Test.java) + ITs (*IT.java, TestContainers)
+│   ├── Dockerfile
 │   └── pom.xml
 │
 ├── frontend/                   # Angular 21 SPA
@@ -190,20 +198,22 @@ InsurTech-Project/
 │   │   │   ├── auth/           # AuthService (signals), guards, JWT interceptor
 │   │   │   └── api/            # ClaimsApiService, Claim model
 │   │   ├── shared/
-│   │   │   └── status-chip/    # Colour-coded claim status component
+│   │   │   └── status-chip/    # Colour-coded claim status chip component
 │   │   └── features/
 │   │       ├── portal/         # Customer: my-claims + submit-claim
 │   │       └── backoffice/     # Backoffice: review-queue (role-gated)
+│   ├── e2e/                    # Playwright end-to-end tests
 │   ├── src/environments/       # Dev / prod environment config
-│   ├── public/
-│   │   └── silent-check-sso.html
-│   └── proxy.conf.json         # Dev proxy: /api → localhost:8080
+│   ├── nginx.conf              # SPA routing + /api/ proxy to backend
+│   ├── Dockerfile              # Multi-stage: Node build → nginx serve
+│   └── playwright.config.ts
 │
 ├── keycloak/
 │   └── insurtech-realm.json    # Realm export: users, client, roles, scopes
 │
-├── docker-compose.yml          # PostgreSQL + Kafka + Keycloak + Backend
+├── docker-compose.yml          # PostgreSQL + Kafka + Keycloak + Backend + Frontend (nginx)
 ├── .env.example                # Required environment variables (no secrets)
+├── CLAUDE.md                   # AI assistant context for this codebase
 ├── LICENSE
 └── README.md
 ```
@@ -228,7 +238,7 @@ git clone https://github.com/Goncalves95/InsurTech-Project.git
 cd InsurTech-Project
 
 cp .env.example .env
-# Default values in .env work with docker-compose out of the box
+# Default values work with docker-compose out of the box for dev mode
 ```
 
 ### 2 — Start infrastructure
@@ -237,7 +247,7 @@ cp .env.example .env
 docker-compose up postgres kafka keycloak -d
 ```
 
-Wait ~15 seconds for Keycloak to finish its first-boot import of `insurtech-realm.json`.
+Wait ~15 s for Keycloak to finish its first-boot import of `insurtech-realm.json`.
 
 ### 3 — Start the backend
 
@@ -251,7 +261,7 @@ cd backend
 ./mvnw spring-boot:run
 ```
 
-API available at: `http://localhost:8080`  
+API: `http://localhost:8080`  
 Swagger UI: `http://localhost:8080/swagger-ui.html`
 
 ### 4 — Start the frontend
@@ -259,12 +269,20 @@ Swagger UI: `http://localhost:8080/swagger-ui.html`
 ```bash
 cd frontend
 npm install
-npm start          # ng serve with proxy → localhost:8080
+npm start          # ng serve — proxies /api/ to localhost:8080
 ```
 
-Application available at: `http://localhost:4200`
+App: `http://localhost:4200`
 
-### 5 — Test accounts
+### 5 — Full Docker stack (optional)
+
+```bash
+docker-compose up          # builds and starts all 5 services
+```
+
+Frontend served by nginx at `http://localhost:4200`
+
+### 6 — Test accounts
 
 | Username | Password | Role |
 |---|---|---|
@@ -292,18 +310,34 @@ cd backend
 - **Modularity tests** — Spring Modulith verifies no module violates declared boundaries
 - **JaCoCo** — enforces ≥ 70% line coverage; report at `target/site/jacoco/index.html`
 
-### Backend — unit tests only (no Docker)
-
-```bash
-./mvnw test
-```
-
-### Frontend — production build check
+### Frontend — unit tests
 
 ```bash
 cd frontend
-npm run build
+
+npm test                   # run all tests once
+npm run test:coverage      # run with v8 coverage report (87%+ statements)
 ```
+
+Tests use **Vitest** + **Angular Testing Library** — components are tested as a user
+would interact with them, not by inspecting internal class state.
+
+| Test file | What it covers |
+|---|---|
+| `app.spec.ts` | App shell: toolbar, auth state, brand name |
+| `auth.service.spec.ts` | AuthService signals, Keycloak mock, backoffice role |
+| `status-chip.spec.ts` | CSS classes and labels for all 6 claim statuses |
+| `my-claims.spec.ts` | Loading, error, empty state, session guard, data render |
+
+### Frontend — E2E tests (requires Docker stack)
+
+```bash
+cd frontend
+npm run e2e        # headless Chromium
+npm run e2e:ui     # Playwright interactive UI
+```
+
+Set `E2E_USERNAME` + `E2E_PASSWORD` env vars to run the authenticated portal tests.
 
 ---
 
@@ -324,7 +358,7 @@ Interactive docs: `http://localhost:8080/swagger-ui.html`
 ```
 PENDING_OCR → OCR_PROCESSING → PENDING_VALIDATION → APPROVED
                                                    ↘ REJECTED
-                                                   ↘ MANUAL_REVIEW
+                                                   ↘ MANUAL_REVIEW_REQUIRED
 ```
 
 ---
@@ -333,19 +367,21 @@ PENDING_OCR → OCR_PROCESSING → PENDING_VALIDATION → APPROVED
 
 ### Authentication & Authorisation
 
-- All endpoints are protected by Spring Security OAuth2 Resource Server
-- JWTs are validated against Keycloak's JWKS endpoint on every request
+- All endpoints protected by Spring Security OAuth2 Resource Server
+- JWTs validated against Keycloak's JWKS endpoint on every request
 - Role-based access: `SCOPE_backoffice` required for the review queue endpoint
-- Angular SPA uses **PKCE with S256** code challenge — immune to authorisation code interception
-- **Silent SSO** via hidden iframe (`silent-check-sso.html`) — no visible redirects on page load
-- Tokens are refreshed automatically 30 seconds before expiry (JWT interceptor)
+- Angular SPA uses **PKCE with S256** — immune to authorisation code interception
+- Tokens refreshed automatically 30 s before expiry (JWT interceptor)
+- **Note:** this Keycloak realm issues opaque access tokens; the user subject is
+  resolved from the ID token (`idTokenParsed.sub`)
 
 ### Data protection
 
-- Error responses never expose internal stack traces or system details (`GlobalExceptionHandler`)
+- Error responses never expose internal stack traces (`GlobalExceptionHandler`)
 - Every record carries `created_at`, `updated_at`, `created_by`, `updated_by` audit columns
-- Secrets are loaded from environment variables — never hardcoded, never committed
-- Production deployment must reside in a Swiss data centre (`eu-central-2` or `switzerlandnorth`) to comply with **FADP / nDSG** (Swiss Federal Act on Data Protection)
+- Secrets loaded from environment variables — never hardcoded, never committed
+- Production deployment must reside in a Swiss data centre (`switzerlandnorth`) to
+  comply with **FADP / nDSG** (Swiss Federal Act on Data Protection)
 
 ---
 
@@ -357,12 +393,13 @@ Each module exposes a `domain/port` interface. Infrastructure adapters implement
 and are selected via Spring `@Profile`. Swapping from stub to production adapter
 requires zero changes to domain code.
 
-| Port | Dev adapter (current) | Production adapter (roadmap) |
+| Port | Dev adapter | Production adapter (`azure` profile) |
 |---|---|---|
-| `DocumentStoragePort` | `LocalDocumentStorageAdapter` | `AzureBlobStorageAdapter` |
-| `OcrProviderPort` | `StubOcrProviderAdapter` | `AzureDocumentIntelligenceAdapter` |
-| `PolicyContextPort` | `StubPolicyContextAdapter` | `PolicyManagementServiceAdapter` |
-| `NotificationPort` | `StubEmailNotificationAdapter` | `SendGridNotificationAdapter` |
+| `DocumentStoragePort` | `LocalDocumentStorageAdapter` | `AzureBlobStorageAdapter` ✓ |
+| `OcrProviderPort` | `StubOcrProviderAdapter` | `AzureDocumentIntelligenceAdapter` ✓ |
+| `NotificationPort` | `StubEmailNotificationAdapter` | `SendGridEmailNotificationAdapter` ✓ |
+| `UserEmailResolverPort` | `StubUserEmailResolverAdapter` | `KeycloakAdminUserEmailAdapter` ✓ |
+| `PolicyContextPort` | `StubPolicyContextAdapter` | *(roadmap)* |
 
 ### Strategy Pattern — Rules Engine
 
@@ -373,7 +410,7 @@ class changes.
 Active strategies:
 - `DeductibleValidationStrategy` — checks remaining franchise (Selbstbehalt)
 - `CoverageAmountValidationStrategy` — checks maximum policy coverage
-- `TarmedCodeValidationStrategy` — validates Tarmed code format (XX.XXXX)
+- `TarmedCodeValidationStrategy` — validates Tarmed code format (`XX.XXXX`)
 
 ### Custom Exception Hierarchy
 
@@ -390,7 +427,7 @@ InsurTechException (abstract)
 
 Modules communicate exclusively via:
 1. **Public API classes** at the module root package
-2. **Domain events** published to Spring's ApplicationEventPublisher / Kafka
+2. **Domain events** published to Spring's `ApplicationEventPublisher` / Kafka
 
 Internal classes (`*JpaRepository`, `*RepositoryAdapter`, etc.) are package-private
 and inaccessible to other modules. `ModularityTests` enforces this at every CI run
@@ -400,14 +437,18 @@ and generates PlantUML architecture diagrams to `target/modulith-docs/`.
 
 ## Roadmap
 
-- [ ] `AzureDocumentIntelligenceAdapter` — real Tarmed/Tardoc OCR
-- [ ] `AzureBlobStorageAdapter` — secure document storage (Swiss region)
-- [ ] `PolicyManagementServiceAdapter` — live policy lookup
-- [ ] `SendGridNotificationAdapter` — transactional email
-- [ ] Add Angular frontend container (nginx) to Docker Compose
+- [x] Azure Document Intelligence adapter — Tarmed/Tardoc OCR
+- [x] Azure Blob Storage adapter — secure document storage
+- [x] SendGrid notification adapter — transactional email on claim decision
+- [x] Keycloak Admin user resolver — email lookup for notifications
+- [x] nginx frontend container in Docker Compose
+- [x] Angular Testing Library unit tests (87%+ coverage)
+- [x] Playwright E2E test suite
+- [ ] `PolicyManagementServiceAdapter` — live policy lookup (currently stub)
+- [ ] Backoffice review-queue UI (Angular feature)
 - [ ] SonarQube quality gate in CI
 - [ ] Snyk dependency vulnerability scanning in CI
-- [ ] Helm chart for Kubernetes deployment (AKS / Swiss region)
+- [ ] Helm chart for Kubernetes deployment (AKS / `switzerlandnorth`)
 
 ---
 
@@ -428,6 +469,6 @@ For permissions and licensing inquiries: **create@raigonlab.com**
 
 **Fernando Goncalves**  
 Full-stack Software Engineer — Java / Spring Boot / Angular  
-Portfolio project targeting Swiss Krankenkassen engineering roles  
+Portfolio project targeting Swiss Krankenkassen engineering roles
 
 [![GitHub](https://img.shields.io/badge/GitHub-Goncalves95-181717?logo=github)](https://github.com/Goncalves95)
