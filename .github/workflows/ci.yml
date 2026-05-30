@@ -54,7 +54,7 @@ jobs:
           retention-days: 14
 
   frontend:
-    name: Frontend — Build (Angular 21 / Node 22)
+    name: Frontend — Lint, Test & Build (Angular 21 / Node 22)
     runs-on: ubuntu-latest
 
     steps:
@@ -71,6 +71,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
         working-directory: frontend
+
+      - name: Unit tests with coverage
+        run: npm run test:coverage
+        working-directory: frontend
+        env:
+          CI: true
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: frontend-coverage-report
+          path: frontend/coverage/
+          retention-days: 14
 
       - name: Build production bundle
         run: npm run build
