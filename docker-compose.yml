@@ -73,9 +73,9 @@ services:
       KC_HTTP_ENABLED: "true"
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_STRICT_HTTPS: "false"
-      # Use the container name so the 'iss' claim in tokens matches what
-      # the backend validates against (both resolve 'keycloak' on the Docker network)
-      KC_HOSTNAME: keycloak
+      # host.docker.internal resolves from both the Windows host (Docker Desktop)
+      # and from inside containers — keeps the 'iss' claim consistent everywhere
+      KC_HOSTNAME_URL: http://host.docker.internal:8180
     ports:
       - "8180:8080"   # admin console + token endpoint for host tools
     volumes:
@@ -106,8 +106,7 @@ services:
       DB_USERNAME: insurtech
       DB_PASSWORD: insurtech
       KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      # Must match KC_HOSTNAME + internal port so 'iss' validation passes
-      JWT_ISSUER_URI: http://keycloak:8080/realms/insurtech
+      JWT_ISSUER_URI: http://host.docker.internal:8180/realms/insurtech
       # Azure services — set real values in docker-compose.override.yml
       AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT: ${AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT:-http://stub}
       AZURE_DOCUMENT_INTELLIGENCE_KEY: ${AZURE_DOCUMENT_INTELLIGENCE_KEY:-stub-key}
