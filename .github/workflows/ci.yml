@@ -2,31 +2,30 @@ name: InsurTech Platform CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  build-and-test:
-    name: Build, Test & Verify
+
+  backend:
+    name: Backend — Build & Test (Java 21)
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up JDK 21 (Temurin)
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: "21"
+          distribution: temurin
           cache: maven
 
-      - name: Build and run all tests
-        # -B: batch mode (no ANSI colours in logs)
-        # --no-transfer-progress: suppresses noisy download progress bars
-        # TestContainers will spin up real PostgreSQL + Kafka via Docker
-        # (ubuntu-latest runners include Docker out of the box)
+      - name: Build, unit tests & integration tests
+        # TestContainers spins up real PostgreSQL + Kafka via the Docker daemon
+        # that is pre-installed on every ubuntu-latest GitHub Actions runner.
         run: mvn verify -B --no-transfer-progress
         working-directory: backend
 
@@ -38,7 +37,7 @@ jobs:
           path: backend/target/site/jacoco/
           retention-days: 14
 
-      - name: Upload Surefire test results
+      - name: Upload Surefire results
         uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -46,10 +45,49 @@ jobs:
           path: backend/target/surefire-reports/
           retention-days: 14
 
-      - name: Upload Failsafe integration test results
+      - name: Upload Failsafe results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: failsafe-integration-test-results
           path: backend/target/failsafe-reports/
           retention-days: 14
+
+  frontend:
+    name: Frontend — Build (Angular 21 / Node 22)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node 22 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Build production bundle
+        run: npm run build
+        working-directory: frontend
+
+  ci-gate:
+    name: CI — All checks passed
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    if: always()
+    steps:
+      - name: Verify all jobs succeeded
+        run: |
+          backend="${{ needs.backend.result }}"
+          frontend="${{ needs.frontend.result }}"
+          if [[ "$backend" != "success" || "$frontend" != "success" ]]; then
+            echo "backend=$backend  frontend=$frontend"
+            exit 1
+          fi
+          echo "All CI checks passed."
