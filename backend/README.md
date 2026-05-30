@@ -190,9 +190,9 @@ Full interactive docs: `http://localhost:8080/swagger-ui.html`
 ## Roadmap
 
 - [ ] `AzureDocumentIntelligenceAdapter` — real Tarmed/Tardoc OCR
-- [ ] `AzureBlobStorageAdapter` — secure document storage
+- [ ] `AzureBlobStorageAdapter` — secure document storage (Swiss region)
 - [ ] `PolicyManagementServiceAdapter` — real policy lookup
 - [ ] `SendGridNotificationAdapter` — transactional email
-- [ ] Docker Compose with all services for one-command local startup
-- [ ] GitHub Actions CI pipeline (test → SonarQube → Snyk → build)
-- [ ] Angular frontend (client portal + backoffice dashboard)
+- [ ] SonarQube quality gate in CI
+- [ ] Snyk dependency vulnerability scanning in CI
+- [ ] Helm chart for Kubernetes deployment (AKS / Swiss region)
