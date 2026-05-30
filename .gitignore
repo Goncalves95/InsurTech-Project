@@ -1,0 +1,84 @@
+# ===== JAVA / MAVEN =====
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ===== IDE =====
+.idea/
+*.iws
+*.iml
+*.ipr
+.vscode/
+*.swp
+*.swo
+*~
+
+# ===== OS =====
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ===== SPRING BOOT =====
+application-local.yml
+application-local.properties
+
+# ===== SECRETS & CREDENTIALS — NEVER COMMIT =====
+# These files may contain passwords, API keys, tokens, or connection strings.
+# See .env.example for the required variables.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jks
+*.keystore
+*.truststore
+secrets/
+credentials/
+
+# ===== DOCKER =====
+# Local override files may contain environment-specific secrets
+docker-compose.override.yml
+
+# ===== LOGS =====
+*.log
+logs/
+
+# ===== TERRAFORM =====
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+!*.tfvars.example
+.terraform.lock.hcl
+
+# ===== NODE / ANGULAR (frontend — added for when we scaffold it) =====
+node_modules/
+dist/
+.angular/cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ===== JACOCO =====
+backend/target/site/jacoco/
+
+# ===== SONARQUBE =====
+.sonar/
+
+# ===== CLAUDE =====
+.claude/
