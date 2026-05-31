@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/logo.jpg" alt="Elite InsurTech" width="400" />
+</p>
+
 # InsurTech Claims Platform
 
 [![CI](https://github.com/Goncalves95/InsurTech-Project/actions/workflows/ci.yml/badge.svg)](https://github.com/Goncalves95/InsurTech-Project/actions/workflows/ci.yml)
@@ -472,3 +476,4 @@ Full-stack Software Engineer — Java / Spring Boot / Angular
 Portfolio project targeting Swiss Krankenkassen engineering roles
 
 [![GitHub](https://img.shields.io/badge/GitHub-Goncalves95-181717?logo=github)](https://github.com/Goncalves95)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-Fernando_Goncalves-0A66C2?logo=linkedin)](https://www.linkedin.com/in/o-teu-link-aqui/)

@@ -27,6 +27,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "favicon.png",
+                "input": "src",
+                "output": "/"
               }
             ],
             "styles": [
