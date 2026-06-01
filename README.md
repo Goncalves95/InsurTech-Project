@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="docs/logo.jpg" alt="Elite InsurTech" width="400" />
+  <img src="docs/logo.png" alt="Elite InsurTech" width="400" />
 </p>
 
 # InsurTech Claims Platform
