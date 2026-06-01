@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
+
+    <!--
+        Dev-only seed data. Only runs when Liquibase context includes "dev".
+        policy_holder_id values are bound to the local Keycloak instance UUIDs
+        imported from keycloak/insurtech-realm.json.
+          customer  → d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b
+          backoffice → 6a35eebc-9170-4d43-b468-37a7207ebab1
+    -->
+    <changeSet id="V005-1" author="insurtech-platform" context="dev">
+        <insert tableName="claims">
+            <column name="id" value="a0000001-0000-0000-0000-000000000001"/>
+            <column name="policy_holder_id" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
+            <column name="document_storage_key" value="a0000001-0000-0000-0000-000000000001/seed_tarmed-invoice-jan.pdf"/>
+            <column name="status" value="APPROVED"/>
+            <column name="total_amount" valueNumeric="148.60"/>
+            <column name="deductible" valueNumeric="0.00"/>
+            <column name="reimbursable_amount" valueNumeric="148.60"/>
+            <column name="submitted_at" valueDate="2026-05-10T09:15:00Z"/>
+            <column name="created_at" valueDate="2026-05-10T09:15:00Z"/>
+            <column name="updated_at" valueDate="2026-05-10T09:15:04Z"/>
+            <column name="created_by" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="claims">
+            <column name="id" value="a0000001-0000-0000-0000-000000000002"/>
+            <column name="policy_holder_id" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
+            <column name="document_storage_key" value="a0000001-0000-0000-0000-000000000002/seed_tarmed-invoice-feb.pdf"/>
+            <column name="status" value="APPROVED"/>
+            <column name="total_amount" valueNumeric="320.50"/>
+            <column name="deductible" valueNumeric="0.00"/>
+            <column name="reimbursable_amount" valueNumeric="320.50"/>
+            <column name="submitted_at" valueDate="2026-05-22T14:30:00Z"/>
+            <column name="created_at" valueDate="2026-05-22T14:30:00Z"/>
+            <column name="updated_at" valueDate="2026-05-22T14:30:06Z"/>
+            <column name="created_by" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="claims">
+            <column name="id" value="a0000001-0000-0000-0000-000000000003"/>
+            <column name="policy_holder_id" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
+            <column name="document_storage_key" value="a0000001-0000-0000-0000-000000000003/seed_tarmed-invoice-specialist.pdf"/>
+            <column name="status" value="MANUAL_REVIEW_REQUIRED"/>
+            <column name="reviewer_note" value="Invoice total CHF 475.80 exceeds remaining deductible of CHF 100.00. Manual review required."/>
+            <column name="total_amount" valueNumeric="475.80"/>
+            <column name="deductible" valueNumeric="100.00"/>
+            <column name="reimbursable_amount" valueNumeric="375.80"/>
+            <column name="submitted_at" valueDate="2026-05-28T11:00:00Z"/>
+            <column name="created_at" valueDate="2026-05-28T11:00:00Z"/>
+            <column name="updated_at" valueDate="2026-05-28T11:00:05Z"/>
+            <column name="created_by" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+
+        <insert tableName="claims">
+            <column name="id" value="a0000001-0000-0000-0000-000000000004"/>
+            <column name="policy_holder_id" value="6a35eebc-9170-4d43-b468-37a7207ebab1"/>
+            <column name="document_storage_key" value="a0000001-0000-0000-0000-000000000004/seed_tarmed-invoice-hospital.pdf"/>
+            <column name="status" value="MANUAL_REVIEW_REQUIRED"/>
+            <column name="reviewer_note" value="Invoice total CHF 892.00 exceeds remaining deductible of CHF 100.00. Manual review required."/>
+            <column name="total_amount" valueNumeric="892.00"/>
+            <column name="deductible" valueNumeric="100.00"/>
+            <column name="reimbursable_amount" valueNumeric="792.00"/>
+            <column name="submitted_at" valueDate="2026-05-30T16:45:00Z"/>
+            <column name="created_at" valueDate="2026-05-30T16:45:00Z"/>
+            <column name="updated_at" valueDate="2026-05-30T16:45:07Z"/>
+            <column name="created_by" value="6a35eebc-9170-4d43-b468-37a7207ebab1"/>
+            <column name="updated_by" value="system"/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>
