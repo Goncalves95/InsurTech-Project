@@ -10,16 +10,48 @@
 [![Angular](https://img.shields.io/badge/Angular-21-DD0031?logo=angular&logoColor=white)](https://angular.dev)
 [![License](https://img.shields.io/badge/License-Proprietary-red)](./LICENSE)
 
-> Enterprise-grade Swiss Krankenkassen medical invoice processing platform.  
-> Automates the validation of Tarmed/Tardoc invoices against policy rules, from
-> document ingestion through OCR extraction to reimbursement decision — with a
-> full audit trail and event-driven processing pipeline.
+> End-to-end automation of Swiss Krankenkassen medical invoice reimbursement —
+> from PDF upload through OCR extraction, Tarmed validation and franchise calculation
+> to an instant approval decision, with human review only where rules flag an exception.
+
+---
+
+## The Problem
+
+Swiss health insurers handle **millions of medical invoices per year**. Each document
+must be checked against Tarmed/Tardoc billing codes, the insured's annual franchise
+(deductible), and policy coverage limits. Done manually, this process is:
+
+| Challenge | Business impact |
+|---|---|
+| **Specialist knowledge required** | High staffing cost; hard to scale during volume peaks |
+| **Error-prone franchise calculation** | Over- and under-payments; compliance risk |
+| **Days-long processing cycles** | Poor policyholder experience; churn risk |
+| **No structured audit trail** | FADP / nDSG compliance gaps |
+| **All claims need human eyes** | Bottleneck even for routine, clearly valid invoices |
+
+---
+
+## The Solution
+
+This platform automates the full pipeline. The rules engine approves straightforward
+claims in seconds and routes only genuine exceptions to reviewers:
+
+| What the platform does | Result |
+|---|---|
+| OCR extraction of Tarmed codes, amounts and provider data | No manual data entry |
+| Automated franchise & reimbursable amount calculation | Zero arithmetic errors |
+| Strategy-based rules engine (deductible, coverage limits, code whitelist) | Consistent, auditable decisions |
+| Auto-approval for clean invoices; review queue for flagged ones | Reviewers focus only where needed |
+| Immutable event log via Spring Modulith + Kafka | Full FADP-compliant audit trail |
+| Email notifications to policyholders on every decision | Instant, transparent communication |
 
 ---
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Screenshots](#screenshots)
 - [System Architecture](#system-architecture)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
@@ -36,10 +68,7 @@
 
 ## Overview
 
-Swiss Krankenkassen (health insurers) process hundreds of thousands of medical
-invoices per year. Manual validation is error-prone, slow, and expensive. This
-platform demonstrates how an enterprise engineering team would approach automating
-that pipeline:
+Platform capabilities at a glance:
 
 | Capability | Description |
 |---|---|
