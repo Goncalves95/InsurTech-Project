@@ -22,6 +22,7 @@ const MOCK_CLAIM: Claim = {
   id: 'claim-001',
   policyHolderId: 'user-001',
   status: 'APPROVED',
+  reviewerNote: null,
   documentReference: 'invoice.pdf',
   totalAmount: 250,
   deductible: 50,

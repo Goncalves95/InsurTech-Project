@@ -356,7 +356,7 @@ Interactive docs: `http://localhost:8080/swagger-ui.html`
 | `GET` | `/api/v1/claims/{claimId}` | Get claim by ID | any authenticated |
 | `GET` | `/api/v1/claims?policyHolderId=` | List all claims for a policy holder | any authenticated |
 | `GET` | `/api/v1/claims/status/{status}` | List claims by status | `SCOPE_backoffice` |
-| `PUT` | `/api/v1/claims/{claimId}/review` | Submit manual review decision (`{"decision":"APPROVE"\|"REJECT","notes":"..."}`) | `SCOPE_backoffice` |
+ra o login o que achas mais natural para uma empresa de seguros ?| `PUT` | `/api/v1/claims/{claimId}/review` | Submit manual review decision (`{"decision":"APPROVE"\|"REJECT","notes":"..."}`) | `SCOPE_backoffice` |
 
 ### Claim lifecycle states
 
@@ -478,7 +478,7 @@ For permissions and licensing inquiries: **create@raigonlab.com**
 
 **Fernando Goncalves**  
 Full-stack Software Engineer — Java / Spring Boot / Angular  
-Portfolio project targeting Swiss Krankenkassen engineering roles
+Portfolio project targeting Swiss Krankenkassen
 
 [![GitHub](https://img.shields.io/badge/GitHub-Goncalves95-181717?logo=github)](https://github.com/Goncalves95)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Fernando_Goncalves-0A66C2?logo=linkedin)](https://www.linkedin.com/in/fernandojcgoncalves/)

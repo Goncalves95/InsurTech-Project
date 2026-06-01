@@ -30,10 +30,14 @@ public class StubOcrProviderAdapter implements OcrProviderPort {
         List<TarmedPosition> positions = List.of(
                 new TarmedPosition("00.0010", "Konsultation, erste 5 Min. (Grundkonsultation)", 1,
                         new BigDecimal("17.28"), new BigDecimal("17.28")),
-                new TarmedPosition("00.0030", "Konsultation, jede weiteren 5 Min.", 3,
-                        new BigDecimal("10.30"), new BigDecimal("30.90")),
+                new TarmedPosition("00.0030", "Konsultation, jede weiteren 5 Min.", 6,
+                        new BigDecimal("10.30"), new BigDecimal("61.80")),
                 new TarmedPosition("35.0020", "Blutentnahme durch Punktion der Vene", 1,
-                        new BigDecimal("5.60"), new BigDecimal("5.60"))
+                        new BigDecimal("5.60"), new BigDecimal("5.60")),
+                new TarmedPosition("39.0020", "Laboranalyse im Praxislabor (Basispanel)", 1,
+                        new BigDecimal("42.40"), new BigDecimal("42.40")),
+                new TarmedPosition("00.0060", "Beratung, schriftlich, pro angefangene 5 Min.", 2,
+                        new BigDecimal("10.76"), new BigDecimal("21.52"))
         );
 
         return new ExtractedInvoiceData(
@@ -41,7 +45,7 @@ public class StubOcrProviderAdapter implements OcrProviderPort {
                 "7601000000000",
                 "Dr. med. Hans Muster",
                 LocalDate.now().minusDays(7),
-                new BigDecimal("53.78"),
+                new BigDecimal("148.60"),
                 positions
         );
     }
