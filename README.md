@@ -45,7 +45,7 @@ that pipeline:
 |---|---|
 | **Invoice ingestion** | Customers submit PDF/image invoices via a secure portal |
 | **OCR extraction** | Azure Document Intelligence extracts amounts, Tarmed codes, provider details |
-| **Rules engine** | Strategy-based validator checks franchise, coverage limits and Tarmed codes |
+| **Rules engine** | Strategy-based validator checks franchise, coverage limits and Tarmed codes; computes CHF deductible and reimbursable amounts per policy |
 | **Event-driven flow** | Kafka decouples each processing stage; at-least-once delivery guaranteed |
 | **Backoffice dashboard** | Claims flagged for manual review appear in a role-gated queue |
 | **Audit trail** | Every state transition is timestamped and user-stamped via JPA Auditing |
@@ -215,7 +215,7 @@ InsurTech-Project/
 │   │   └── shared/             # Exceptions, GlobalExceptionHandler, audit, AzureConfig
 │   ├── src/main/resources/
 │   │   ├── application.yml
-│   │   └── db/changelog/       # Liquibase migrations (V001–V003)
+│   │   └── db/changelog/       # Liquibase migrations (V001–V005)
 │   ├── src/test/               # Unit tests (*Test.java) + ITs (*IT.java, TestContainers)
 │   ├── Dockerfile
 │   └── pom.xml
@@ -291,6 +291,10 @@ cd backend
 
 API: `http://localhost:8080`  
 Swagger UI: `http://localhost:8080/swagger-ui.html`
+
+> **Dev seed data**: on first boot with the `dev` profile, Liquibase automatically
+> inserts 4 demo claims (2 APPROVED + 2 MANUAL\_REVIEW\_REQUIRED) for the `customer`
+> and `backoffice` test accounts so the UI is immediately populated.
 
 ### 4 — Start the frontend
 
@@ -380,7 +384,20 @@ Interactive docs: `http://localhost:8080/swagger-ui.html`
 | `GET` | `/api/v1/claims/{claimId}` | Get claim by ID | any authenticated |
 | `GET` | `/api/v1/claims?policyHolderId=` | List all claims for a policy holder | any authenticated |
 | `GET` | `/api/v1/claims/status/{status}` | List claims by status | `SCOPE_backoffice` |
-ra o login o que achas mais natural para uma empresa de seguros ?| `PUT` | `/api/v1/claims/{claimId}/review` | Submit manual review decision (`{"decision":"APPROVE"\|"REJECT","notes":"..."}`) | `SCOPE_backoffice` |
+| `PUT` | `/api/v1/claims/{claimId}/review` | Submit manual review decision (`{"decision":"APPROVE"\|"REJECT","notes":"..."}`) | `SCOPE_backoffice` |
+
+### Claim response fields
+
+| Field | Type | Description |
+|---|---|---|
+| `id` | UUID | Claim identifier |
+| `policyHolderId` | string | Keycloak subject (`idTokenParsed.sub`) |
+| `status` | enum | Current lifecycle state |
+| `reviewerNote` | string? | Flagged reason (rules engine) or reviewer decision notes |
+| `totalAmount` | decimal? | Total invoice amount extracted by OCR (CHF) |
+| `deductible` | decimal? | Franchise portion applied to this invoice (CHF) |
+| `reimbursableAmount` | decimal? | Amount the insurer reimburses (`totalAmount − deductible`) |
+| `submittedAt` | ISO 8601 | Submission timestamp |
 
 ### Claim lifecycle states
 
