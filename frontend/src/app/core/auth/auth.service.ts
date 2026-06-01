@@ -27,15 +27,15 @@ export class AuthService {
 
     this._authenticated.set(authenticated);
     if (authenticated) {
-      this._username.set(this.kc.tokenParsed?.['preferred_username']);
-      this._roles.set(this.kc.realmAccess?.roles ?? []);
-
-      // Access tokens in this realm are opaque, so kc.subject and kc.tokenParsed are null.
-      // The subject is reliably available in the ID token (idTokenParsed.sub).
+      // Access tokens in this realm are opaque — all user claims come from the ID token.
       const idToken = this.kc.idTokenParsed as Record<string, unknown> | undefined;
-      const accessToken = this.kc.tokenParsed as Record<string, unknown> | undefined;
+      this._username.set(
+        (idToken?.['preferred_username'] ?? this.kc.tokenParsed?.['preferred_username']) as string | undefined
+      );
+      const realmAccess = (idToken?.['realm_access'] ?? this.kc.realmAccess) as { roles?: string[] } | undefined;
+      this._roles.set(realmAccess?.roles ?? []);
       this._policyHolderId.set(
-        (this.kc.subject ?? idToken?.['sub'] ?? accessToken?.['sub'] ?? '') as string,
+        (this.kc.subject ?? idToken?.['sub'] ?? '') as string,
       );
     }
   }

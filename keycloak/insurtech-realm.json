@@ -10,20 +10,18 @@
   "accessTokenLifespan": 3600,
   "ssoSessionIdleTimeout": 1800,
   "ssoSessionMaxLifespan": 36000,
-
   "roles": {
     "realm": [
       {
         "name": "customer",
-        "description": "Regular policy holder — can submit and view own claims"
+        "description": "Regular policy holder \u00e2\u20ac\u201d can submit and view own claims"
       },
       {
         "name": "backoffice",
-        "description": "Claims analyst — access to manual review queue and claim adjudication"
+        "description": "Claims analyst \u00e2\u20ac\u201d access to manual review queue and claim adjudication"
       }
     ]
   },
-
   "clientScopes": [
     {
       "name": "backoffice",
@@ -35,7 +33,6 @@
       }
     }
   ],
-
   "clients": [
     {
       "clientId": "insurtech-frontend",
@@ -60,14 +57,14 @@
       "defaultClientScopes": [
         "openid",
         "profile",
-        "email"
+        "email",
+        "roles"
       ],
       "optionalClientScopes": [
         "backoffice"
       ]
     }
   ],
-
   "users": [
     {
       "username": "backoffice",
@@ -83,7 +80,9 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["backoffice"]
+      "realmRoles": [
+        "backoffice"
+      ]
     },
     {
       "username": "customer",
@@ -99,7 +98,9 @@
           "temporary": false
         }
       ],
-      "realmRoles": ["customer"]
+      "realmRoles": [
+        "customer"
+      ]
     }
   ]
 }
