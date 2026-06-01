@@ -1,13 +1,13 @@
 <div class="page-header">
   <h1>Review Queue</h1>
-  <mat-form-field appearance="outline" class="status-filter">
-    <mat-label>Filter by Status</mat-label>
-    <mat-select [(ngModel)]="selectedStatus" (ngModelChange)="loadClaims()">
-      @for (s of statuses; track s) {
-        <mat-option [value]="s">{{ formatStatus(s) }}</mat-option>
-      }
-    </mat-select>
-  </mat-form-field>
+  <mat-button-toggle-group
+    [ngModel]="selectedStatus"
+    (ngModelChange)="selectedStatus = $event; loadClaims()"
+    aria-label="Filter by status">
+    @for (s of statuses; track s) {
+      <mat-button-toggle [value]="s">{{ formatStatus(s) }}</mat-button-toggle>
+    }
+  </mat-button-toggle-group>
 </div>
 
 @if (loading()) {
@@ -19,7 +19,7 @@
 } @else if (claims().length === 0) {
   <p class="empty">No claims found for this status.</p>
 } @else {
-  <mat-table [dataSource]="claims()">
+  <mat-table [dataSource]="claims()" multiTemplateDataRows>
 
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef>Claim ID</mat-header-cell>

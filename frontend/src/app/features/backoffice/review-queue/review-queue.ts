@@ -3,12 +3,12 @@ import { DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { ClaimsApiService } from '../../../core/api/claims-api.service';
 import { StatusChip } from '../../../shared/status-chip/status-chip';
 import { Claim, ClaimStatus, ReviewDecision } from '../../../core/api/models/claim.model';
@@ -19,12 +19,12 @@ import { Claim, ClaimStatus, ReviewDecision } from '../../../core/api/models/cla
     StatusChip,
     MatTableModule,
     MatProgressSpinnerModule,
-    MatSelectModule,
     MatFormFieldModule,
     MatButtonModule,
     MatIconModule,
     MatInputModule,
     MatChipsModule,
+    MatButtonToggleModule,
     FormsModule,
     DatePipe,
   ],

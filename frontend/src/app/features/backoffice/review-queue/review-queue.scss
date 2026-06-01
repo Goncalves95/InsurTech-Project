@@ -9,8 +9,8 @@
   }
 }
 
-.status-filter {
-  min-width: 220px;
+mat-button-toggle-group {
+  flex-shrink: 0;
 }
 
 .center {
@@ -46,10 +46,11 @@ mat-table {
   }
 }
 
-/* Detail row — hidden by default, expands via height */
+/* Detail row — hidden by default, expands via height.
+   min-height must be overridden because mat-row sets it to 48px. */
 .detail-row {
   height: 0;
-  overflow: hidden;
+  min-height: 0 !important;
 
   &.detail-row--expanded {
     height: auto;
@@ -59,6 +60,7 @@ mat-table {
 .detail-cell {
   padding: 0 !important;
   border-bottom: none !important;
+  overflow: hidden;
 }
 
 /* Review panel inside the expanded row */
