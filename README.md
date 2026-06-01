@@ -54,6 +54,30 @@ that pipeline:
 
 ---
 
+## Screenshots
+
+### Customer Portal — My Claims
+> Policy holder view: submitted invoices with CHF reimbursement amounts and colour-coded status chips.
+
+![My Claims](docs/claims_customer.png)
+
+### Submit a New Claim
+> PDF invoice upload form — the OCR + validation pipeline triggers automatically on submission.
+
+![Submit Claim](docs/submit_new_claim_dialog.png)
+
+### Backoffice — Review Queue (MANUAL\_REVIEW\_REQUIRED)
+> Role-gated reviewer dashboard showing claims flagged by the rules engine for manual intervention.
+
+![Review Queue](docs/review_queue_manual_review_required.png)
+
+### Backoffice — Inline Approve / Reject
+> Expanding a claim row reveals the review panel: flagged reason, reviewer notes, and decision buttons.
+
+![Approve or Reject](docs/review_wueue_manual_review_aprove_or_reject.png)
+
+---
+
 ## System Architecture
 
 ### Component Overview

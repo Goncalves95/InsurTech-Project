@@ -24,13 +24,33 @@
   },
   "clientScopes": [
     {
+      "id": "f4bc76ca-377a-4519-bf25-6797f07a8596",
       "name": "backoffice",
       "description": "Grants access to backoffice-restricted API endpoints",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "true",
         "display.on.consent.screen": "false"
-      }
+      },
+      "protocolMappers": [
+        {
+          "id": "b4cac0e4-62c9-43ca-b1d6-fd7ffeccdaea",
+          "name": "realm-roles",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-usermodel-realm-role-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "multivalued": "true",
+            "userinfo.token.claim": "false",
+            "id.token.claim": "true",
+            "lightweight.claim": "false",
+            "access.token.claim": "false",
+            "claim.name": "realm_access.roles",
+            "jsonType.label": "String"
+          }
+        }
+      ]
     }
   ],
   "clients": [
@@ -58,11 +78,10 @@
         "openid",
         "profile",
         "email",
-        "roles"
-      ],
-      "optionalClientScopes": [
+        "roles",
         "backoffice"
-      ]
+      ],
+      "optionalClientScopes": []
     }
   ],
   "users": [

@@ -9,5 +9,6 @@
     <include file="db/changelog/changes/V002__create_tarmed_positions_table.xml"/>
     <include file="db/changelog/changes/V003__create_event_publication_table.xml"/>
     <include file="db/changelog/changes/V004__add_financials_to_claims.xml"/>
+    <include file="db/changelog/changes/V005__seed_demo_data.xml"/>
 
 </databaseChangeLog>
