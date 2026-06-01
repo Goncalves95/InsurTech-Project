@@ -37,3 +37,84 @@ mat-table {
   font-family: monospace;
   font-size: 12px;
 }
+
+.row-expandable {
+  cursor: pointer;
+
+  &:hover {
+    background: var(--mat-sys-surface-variant);
+  }
+}
+
+/* Detail row — hidden by default, expands via height */
+.detail-row {
+  height: 0;
+  overflow: hidden;
+
+  &.detail-row--expanded {
+    height: auto;
+  }
+}
+
+.detail-cell {
+  padding: 0 !important;
+  border-bottom: none !important;
+}
+
+/* Review panel inside the expanded row */
+.review-panel {
+  padding: 16px 24px 24px;
+  background: var(--mat-sys-surface-container-low);
+  border-left: 4px solid var(--mat-sys-primary);
+  animation: slideDown 0.15s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.review-title {
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+}
+
+.flagged-reason {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+
+  .reason-icon {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--mat-sys-error);
+  }
+}
+
+.notes-field {
+  width: 100%;
+  max-width: 560px;
+}
+
+.review-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn-approve {
+  background-color: #2e7d32 !important;
+  color: #fff !important;
+}
+
+.btn-reject {
+  background-color: var(--mat-sys-error) !important;
+  color: #fff !important;
+}

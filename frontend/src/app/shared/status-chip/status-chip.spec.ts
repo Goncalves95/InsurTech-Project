@@ -22,9 +22,9 @@ describe('StatusChip', () => {
     expect(screen.getByText('REJECTED')).toHaveClass('chip--rejected');
   });
 
-  it('applies the manual modifier class for MANUAL_REVIEW', async () => {
-    await renderChip('MANUAL_REVIEW');
-    expect(screen.getByText('MANUAL REVIEW')).toHaveClass('chip--manual');
+  it('applies the manual modifier class for MANUAL_REVIEW_REQUIRED', async () => {
+    await renderChip('MANUAL_REVIEW_REQUIRED');
+    expect(screen.getByText('MANUAL REVIEW REQUIRED')).toHaveClass('chip--manual');
   });
 
   it('applies the pending-validation modifier class for PENDING_VALIDATION', async () => {

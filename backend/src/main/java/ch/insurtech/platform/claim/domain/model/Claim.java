@@ -58,6 +58,12 @@ public class Claim {
         this.status = ClaimStatus.APPROVED;
     }
 
+    public void manuallyApprove(String notes) {
+        assertStatus(ClaimStatus.MANUAL_REVIEW_REQUIRED, "manually approve after review");
+        this.reviewerNote = notes;
+        this.status = ClaimStatus.APPROVED;
+    }
+
     public void flagForManualReview(String reason) {
         assertStatus(ClaimStatus.PENDING_VALIDATION, "flag for manual review");
         this.reviewerNote = reason;

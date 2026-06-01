@@ -16,7 +16,7 @@ export class StatusChip {
         return 'chip chip--approved';
       case 'REJECTED':
         return 'chip chip--rejected';
-      case 'MANUAL_REVIEW':
+      case 'MANUAL_REVIEW_REQUIRED':
         return 'chip chip--manual';
       case 'PENDING_VALIDATION':
         return 'chip chip--pending-validation';

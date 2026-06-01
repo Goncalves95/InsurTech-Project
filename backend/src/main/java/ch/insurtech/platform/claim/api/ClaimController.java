@@ -1,12 +1,14 @@
 package ch.insurtech.platform.claim.api;
 
 import ch.insurtech.platform.claim.api.dto.ClaimResponse;
+import ch.insurtech.platform.claim.api.dto.ReviewClaimRequest;
 import ch.insurtech.platform.claim.api.mapper.ClaimMapper;
 import ch.insurtech.platform.claim.application.ClaimApplicationService;
 import ch.insurtech.platform.claim.domain.model.Claim;
 import ch.insurtech.platform.claim.domain.model.ClaimStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +18,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -66,5 +70,18 @@ public class ClaimController {
     @Operation(summary = "List claims by status — backoffice only")
     public ResponseEntity<List<ClaimResponse>> listByStatus(@PathVariable ClaimStatus status) {
         return ResponseEntity.ok(claimMapper.toResponseList(claimService.findByStatus(status)));
+    }
+
+    @PutMapping("/{claimId}/review")
+    @PreAuthorize("hasAuthority('SCOPE_backoffice')")
+    @Operation(summary = "Submit a manual review decision — backoffice only")
+    public ResponseEntity<ClaimResponse> reviewClaim(
+            @PathVariable UUID claimId,
+            @RequestBody @Valid ReviewClaimRequest request) {
+        return ResponseEntity.ok(
+                claimMapper.toResponse(
+                        claimService.reviewClaim(claimId, request.decision(), request.notes())
+                )
+        );
     }
 }

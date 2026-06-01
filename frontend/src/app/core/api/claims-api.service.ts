@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
-import { Claim, ClaimStatus } from './models/claim.model';
+import { Claim, ClaimStatus, ReviewRequest } from './models/claim.model';
 
 @Injectable({ providedIn: 'root' })
 export class ClaimsApiService {
@@ -26,5 +26,9 @@ export class ClaimsApiService {
 
   getByStatus(status: ClaimStatus): Observable<Claim[]> {
     return this.http.get<Claim[]>(`${this.baseUrl}/status/${status}`);
+  }
+
+  reviewClaim(claimId: string, request: ReviewRequest): Observable<Claim> {
+    return this.http.put<Claim>(`${this.baseUrl}/${claimId}/review`, request);
   }
 }
