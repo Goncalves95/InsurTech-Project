@@ -5,9 +5,12 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
 
-    <include file="db/changelog/changes/V001__create_claims_table.xml"/>
-    <include file="db/changelog/changes/V002__create_tarmed_positions_table.xml"/>
-    <include file="db/changelog/changes/V003__create_event_publication_table.xml"/>
-    <include file="db/changelog/changes/V004__add_financials_to_claims.xml"/>
+    <changeSet id="V004-1" author="insurtech-platform">
+        <addColumn tableName="claims">
+            <column name="total_amount" type="DECIMAL(10,2)"/>
+            <column name="deductible" type="DECIMAL(10,2)"/>
+            <column name="reimbursable_amount" type="DECIMAL(10,2)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

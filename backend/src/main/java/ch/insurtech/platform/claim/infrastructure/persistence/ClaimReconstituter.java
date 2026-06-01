@@ -4,6 +4,7 @@ import ch.insurtech.platform.claim.domain.model.Claim;
 import ch.insurtech.platform.claim.domain.model.ClaimStatus;
 
 import java.lang.reflect.Constructor;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -17,7 +18,9 @@ class ClaimReconstituter {
     private ClaimReconstituter() {}
 
     static Claim reconstitute(UUID id, String policyHolderId, String documentStorageKey,
-                               ClaimStatus status, String reviewerNote, Instant submittedAt) {
+                               ClaimStatus status, String reviewerNote,
+                               BigDecimal totalAmount, BigDecimal deductible, BigDecimal reimbursableAmount,
+                               Instant submittedAt) {
         try {
             Constructor<Claim> constructor = Claim.class.getDeclaredConstructor(
                     UUID.class, String.class, String.class, Instant.class);
@@ -27,6 +30,9 @@ class ClaimReconstituter {
             setField(claim, "status", status);
             if (reviewerNote != null) {
                 setField(claim, "reviewerNote", reviewerNote);
+            }
+            if (totalAmount != null) {
+                claim.setFinancials(totalAmount, deductible, reimbursableAmount);
             }
             return claim;
         } catch (Exception e) {

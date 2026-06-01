@@ -1,5 +1,6 @@
 package ch.insurtech.platform.claim.application;
 
+import ch.insurtech.platform.claim.api.dto.ReviewDecision;
 import ch.insurtech.platform.claim.domain.event.DocumentUploadedEvent;
 import ch.insurtech.platform.claim.domain.exception.ClaimNotFoundException;
 import ch.insurtech.platform.claim.domain.model.Claim;
@@ -65,5 +66,17 @@ public class ClaimApplicationService {
     @Transactional(readOnly = true)
     public List<Claim> findByStatus(ClaimStatus status) {
         return claimRepository.findByStatus(status);
+    }
+
+    public Claim reviewClaim(UUID claimId, ReviewDecision decision, String notes) {
+        Claim claim = claimRepository.findById(claimId)
+                .orElseThrow(() -> new ClaimNotFoundException(claimId));
+        switch (decision) {
+            case APPROVE -> claim.manuallyApprove(notes);
+            case REJECT -> claim.reject(notes);
+        }
+        Claim saved = claimRepository.save(claim);
+        log.info("Claim {} {} by reviewer", claimId, decision);
+        return saved;
     }
 }

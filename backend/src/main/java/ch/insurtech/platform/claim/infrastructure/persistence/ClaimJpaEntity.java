@@ -9,6 +9,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -33,18 +34,32 @@ public class ClaimJpaEntity extends AuditableEntity {
     @Column(name = "reviewer_note", columnDefinition = "TEXT")
     private String reviewerNote;
 
+    @Column(name = "total_amount", precision = 10, scale = 2)
+    private BigDecimal totalAmount;
+
+    @Column(name = "deductible", precision = 10, scale = 2)
+    private BigDecimal deductible;
+
+    @Column(name = "reimbursable_amount", precision = 10, scale = 2)
+    private BigDecimal reimbursableAmount;
+
     @Column(name = "submitted_at", nullable = false, updatable = false)
     private Instant submittedAt;
 
     protected ClaimJpaEntity() {}
 
     public ClaimJpaEntity(UUID id, String policyHolderId, String documentStorageKey,
-                          ClaimStatus status, String reviewerNote, Instant submittedAt) {
+                          ClaimStatus status, String reviewerNote,
+                          BigDecimal totalAmount, BigDecimal deductible, BigDecimal reimbursableAmount,
+                          Instant submittedAt) {
         this.id = id;
         this.policyHolderId = policyHolderId;
         this.documentStorageKey = documentStorageKey;
         this.status = status;
         this.reviewerNote = reviewerNote;
+        this.totalAmount = totalAmount;
+        this.deductible = deductible;
+        this.reimbursableAmount = reimbursableAmount;
         this.submittedAt = submittedAt;
     }
 
@@ -53,5 +68,8 @@ public class ClaimJpaEntity extends AuditableEntity {
     public String getDocumentStorageKey() { return documentStorageKey; }
     public ClaimStatus getStatus() { return status; }
     public String getReviewerNote() { return reviewerNote; }
+    public BigDecimal getTotalAmount() { return totalAmount; }
+    public BigDecimal getDeductible() { return deductible; }
+    public BigDecimal getReimbursableAmount() { return reimbursableAmount; }
     public Instant getSubmittedAt() { return submittedAt; }
 }

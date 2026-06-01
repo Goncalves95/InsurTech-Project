@@ -20,6 +20,7 @@
   <p class="empty">No claims found for this status.</p>
 } @else {
   <mat-table [dataSource]="claims()">
+
     <ng-container matColumnDef="id">
       <mat-header-cell *matHeaderCellDef>Claim ID</mat-header-cell>
       <mat-cell *matCellDef="let c" class="mono">{{ c.id }}</mat-cell>
@@ -42,17 +43,75 @@
       </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="totalAmount">
-      <mat-header-cell *matHeaderCellDef>Total (CHF)</mat-header-cell>
-      <mat-cell *matCellDef="let c">{{ c.totalAmount | currency: 'CHF' }}</mat-cell>
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef></mat-header-cell>
+      <mat-cell *matCellDef="let c">
+        @if (c.status === 'MANUAL_REVIEW_REQUIRED') {
+          <button mat-icon-button
+                  [class.expanded]="isExpanded(c)"
+                  (click)="toggleExpand(c)"
+                  [attr.aria-label]="isExpanded(c) ? 'Collapse review' : 'Expand review'">
+            <mat-icon>{{ isExpanded(c) ? 'expand_less' : 'rate_review' }}</mat-icon>
+          </button>
+        }
+      </mat-cell>
     </ng-container>
 
-    <ng-container matColumnDef="reimbursableAmount">
-      <mat-header-cell *matHeaderCellDef>Reimbursable (CHF)</mat-header-cell>
-      <mat-cell *matCellDef="let c">{{ c.reimbursableAmount | currency: 'CHF' }}</mat-cell>
+    <!-- Detail row definition -->
+    <ng-container matColumnDef="expandedDetail">
+      <mat-cell *matCellDef="let c" class="detail-cell" [attr.colspan]="displayedColumns.length">
+        @if (isExpanded(c)) {
+          <div class="review-panel">
+            <h3 class="review-title">Manual Review Decision</h3>
+
+            @if (c.reviewerNote) {
+              <p class="flagged-reason">
+                <mat-icon class="reason-icon">warning</mat-icon>
+                Flagged reason: <strong>{{ c.reviewerNote }}</strong>
+              </p>
+            }
+
+            <mat-form-field appearance="outline" class="notes-field">
+              <mat-label>Reviewer notes (optional)</mat-label>
+              <textarea matInput
+                        rows="3"
+                        [ngModel]="reviewNotes()"
+                        (ngModelChange)="reviewNotes.set($event)"
+                        placeholder="Add notes for the policy holder...">
+              </textarea>
+            </mat-form-field>
+
+            @if (reviewError()) {
+              <p class="error">{{ reviewError() }}</p>
+            }
+
+            <div class="review-actions">
+              @if (reviewSubmitting()) {
+                <mat-progress-spinner diameter="24" mode="indeterminate" />
+              } @else {
+                <button mat-raised-button class="btn-approve" (click)="submitReview('APPROVE')">
+                  <mat-icon>check_circle</mat-icon>
+                  Approve
+                </button>
+                <button mat-raised-button class="btn-reject" (click)="submitReview('REJECT')">
+                  <mat-icon>cancel</mat-icon>
+                  Reject
+                </button>
+              }
+              <button mat-button [disabled]="reviewSubmitting()" (click)="toggleExpand(c)">Cancel</button>
+            </div>
+          </div>
+        }
+      </mat-cell>
     </ng-container>
 
     <mat-header-row *matHeaderRowDef="displayedColumns" />
-    <mat-row *matRowDef="let row; columns: displayedColumns" />
+    <mat-row *matRowDef="let row; columns: displayedColumns"
+             [class.row-expandable]="row.status === 'MANUAL_REVIEW_REQUIRED'"
+             (click)="toggleExpand(row)" />
+    <mat-row *matRowDef="let row; columns: detailColumns"
+             class="detail-row"
+             [class.detail-row--expanded]="isExpanded(row)" />
+
   </mat-table>
 }

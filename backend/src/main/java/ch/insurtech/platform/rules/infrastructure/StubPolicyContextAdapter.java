@@ -25,7 +25,7 @@ public class StubPolicyContextAdapter implements PolicyContextPort {
         return new PolicyContext(
                 policyHolderId,
                 new BigDecimal("300.00"),
-                new BigDecimal("200.00"),
+                new BigDecimal("300.00"),
                 false,
                 new BigDecimal("5000.00")
         );

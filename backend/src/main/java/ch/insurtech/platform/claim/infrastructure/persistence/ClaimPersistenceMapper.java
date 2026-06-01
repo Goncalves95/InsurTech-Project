@@ -13,6 +13,9 @@ class ClaimPersistenceMapper {
                 claim.getDocumentStorageKey(),
                 claim.getStatus(),
                 claim.getReviewerNote(),
+                claim.getTotalAmount(),
+                claim.getDeductible(),
+                claim.getReimbursableAmount(),
                 claim.getSubmittedAt()
         );
     }
@@ -24,6 +27,9 @@ class ClaimPersistenceMapper {
                 entity.getDocumentStorageKey(),
                 entity.getStatus(),
                 entity.getReviewerNote(),
+                entity.getTotalAmount(),
+                entity.getDeductible(),
+                entity.getReimbursableAmount(),
                 entity.getSubmittedAt()
         );
     }

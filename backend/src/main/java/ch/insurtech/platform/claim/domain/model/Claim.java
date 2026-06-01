@@ -2,6 +2,7 @@ package ch.insurtech.platform.claim.domain.model;
 
 import ch.insurtech.platform.shared.domain.exception.ValidationException;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,6 +20,9 @@ public class Claim {
     private final String documentStorageKey;
     private ClaimStatus status;
     private String reviewerNote;
+    private BigDecimal totalAmount;
+    private BigDecimal deductible;
+    private BigDecimal reimbursableAmount;
     private final List<TarmedPosition> tarmedPositions;
     private final Instant submittedAt;
 
@@ -58,6 +62,12 @@ public class Claim {
         this.status = ClaimStatus.APPROVED;
     }
 
+    public void manuallyApprove(String notes) {
+        assertStatus(ClaimStatus.MANUAL_REVIEW_REQUIRED, "manually approve after review");
+        this.reviewerNote = notes;
+        this.status = ClaimStatus.APPROVED;
+    }
+
     public void flagForManualReview(String reason) {
         assertStatus(ClaimStatus.PENDING_VALIDATION, "flag for manual review");
         this.reviewerNote = reason;
@@ -80,11 +90,20 @@ public class Claim {
         }
     }
 
+    public void setFinancials(BigDecimal totalAmount, BigDecimal deductible, BigDecimal reimbursableAmount) {
+        this.totalAmount = totalAmount;
+        this.deductible = deductible;
+        this.reimbursableAmount = reimbursableAmount;
+    }
+
     public UUID getId() { return id; }
     public String getPolicyHolderId() { return policyHolderId; }
     public String getDocumentStorageKey() { return documentStorageKey; }
     public ClaimStatus getStatus() { return status; }
     public String getReviewerNote() { return reviewerNote; }
+    public BigDecimal getTotalAmount() { return totalAmount; }
+    public BigDecimal getDeductible() { return deductible; }
+    public BigDecimal getReimbursableAmount() { return reimbursableAmount; }
     public List<TarmedPosition> getTarmedPositions() { return Collections.unmodifiableList(tarmedPositions); }
     public Instant getSubmittedAt() { return submittedAt; }
 }

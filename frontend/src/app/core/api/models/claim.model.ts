@@ -4,13 +4,21 @@ export type ClaimStatus =
   | 'PENDING_VALIDATION'
   | 'APPROVED'
   | 'REJECTED'
-  | 'MANUAL_REVIEW';
+  | 'MANUAL_REVIEW_REQUIRED';
+
+export type ReviewDecision = 'APPROVE' | 'REJECT';
+
+export interface ReviewRequest {
+  decision: ReviewDecision;
+  notes: string;
+}
 
 export interface Claim {
   id: string;
   policyHolderId: string;
   status: ClaimStatus;
-  documentReference: string;
+  reviewerNote: string | null;
+  documentReference: string | null;
   totalAmount: number | null;
   deductible: number | null;
   reimbursableAmount: number | null;

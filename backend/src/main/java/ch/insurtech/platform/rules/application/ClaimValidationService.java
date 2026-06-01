@@ -16,6 +16,7 @@ import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -51,6 +52,11 @@ public class ClaimValidationService {
         ValidationResult combined = validationStrategies.stream()
                 .map(strategy -> strategy.validate(event.extractedData(), policyContext))
                 .reduce(ValidationResult.pass(), ValidationResult::merge);
+
+        BigDecimal totalAmount = event.extractedData().totalAmount();
+        BigDecimal deductible = totalAmount.min(policyContext.remainingDeductible());
+        BigDecimal reimbursable = totalAmount.subtract(deductible).max(BigDecimal.ZERO);
+        claim.setFinancials(totalAmount, deductible, reimbursable);
 
         if (combined.isValid()) {
             claim.approve();

@@ -15,6 +15,9 @@ public class ClaimMapper {
                 claim.getPolicyHolderId(),
                 claim.getStatus(),
                 claim.getReviewerNote(),
+                claim.getTotalAmount(),
+                claim.getDeductible(),
+                claim.getReimbursableAmount(),
                 claim.getSubmittedAt()
         );
     }
