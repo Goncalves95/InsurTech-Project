@@ -9,7 +9,7 @@
         Dev-only seed data. Only runs when Liquibase context includes "dev".
         policy_holder_id values are bound to the local Keycloak instance UUIDs
         imported from keycloak/insurtech-realm.json.
-          customer  → d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b
+          customer   → d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b
           backoffice → 6a35eebc-9170-4d43-b468-37a7207ebab1
     -->
     <changeSet id="V005-1" author="insurtech-platform" context="dev">
@@ -21,9 +21,9 @@
             <column name="total_amount" valueNumeric="148.60"/>
             <column name="deductible" valueNumeric="0.00"/>
             <column name="reimbursable_amount" valueNumeric="148.60"/>
-            <column name="submitted_at" valueDate="2026-05-10T09:15:00Z"/>
-            <column name="created_at" valueDate="2026-05-10T09:15:00Z"/>
-            <column name="updated_at" valueDate="2026-05-10T09:15:04Z"/>
+            <column name="submitted_at" valueComputed="'2026-05-10 09:15:00+00'::timestamptz"/>
+            <column name="created_at" valueComputed="'2026-05-10 09:15:00+00'::timestamptz"/>
+            <column name="updated_at" valueComputed="'2026-05-10 09:15:04+00'::timestamptz"/>
             <column name="created_by" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
             <column name="updated_by" value="system"/>
         </insert>
@@ -36,9 +36,9 @@
             <column name="total_amount" valueNumeric="320.50"/>
             <column name="deductible" valueNumeric="0.00"/>
             <column name="reimbursable_amount" valueNumeric="320.50"/>
-            <column name="submitted_at" valueDate="2026-05-22T14:30:00Z"/>
-            <column name="created_at" valueDate="2026-05-22T14:30:00Z"/>
-            <column name="updated_at" valueDate="2026-05-22T14:30:06Z"/>
+            <column name="submitted_at" valueComputed="'2026-05-22 14:30:00+00'::timestamptz"/>
+            <column name="created_at" valueComputed="'2026-05-22 14:30:00+00'::timestamptz"/>
+            <column name="updated_at" valueComputed="'2026-05-22 14:30:06+00'::timestamptz"/>
             <column name="created_by" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
             <column name="updated_by" value="system"/>
         </insert>
@@ -52,9 +52,9 @@
             <column name="total_amount" valueNumeric="475.80"/>
             <column name="deductible" valueNumeric="100.00"/>
             <column name="reimbursable_amount" valueNumeric="375.80"/>
-            <column name="submitted_at" valueDate="2026-05-28T11:00:00Z"/>
-            <column name="created_at" valueDate="2026-05-28T11:00:00Z"/>
-            <column name="updated_at" valueDate="2026-05-28T11:00:05Z"/>
+            <column name="submitted_at" valueComputed="'2026-05-28 11:00:00+00'::timestamptz"/>
+            <column name="created_at" valueComputed="'2026-05-28 11:00:00+00'::timestamptz"/>
+            <column name="updated_at" valueComputed="'2026-05-28 11:00:05+00'::timestamptz"/>
             <column name="created_by" value="d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b"/>
             <column name="updated_by" value="system"/>
         </insert>
@@ -68,9 +68,9 @@
             <column name="total_amount" valueNumeric="892.00"/>
             <column name="deductible" valueNumeric="100.00"/>
             <column name="reimbursable_amount" valueNumeric="792.00"/>
-            <column name="submitted_at" valueDate="2026-05-30T16:45:00Z"/>
-            <column name="created_at" valueDate="2026-05-30T16:45:00Z"/>
-            <column name="updated_at" valueDate="2026-05-30T16:45:07Z"/>
+            <column name="submitted_at" valueComputed="'2026-05-30 16:45:00+00'::timestamptz"/>
+            <column name="created_at" valueComputed="'2026-05-30 16:45:00+00'::timestamptz"/>
+            <column name="updated_at" valueComputed="'2026-05-30 16:45:07+00'::timestamptz"/>
             <column name="created_by" value="6a35eebc-9170-4d43-b468-37a7207ebab1"/>
             <column name="updated_by" value="system"/>
         </insert>
