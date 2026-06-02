@@ -105,6 +105,11 @@ Platform capabilities at a glance:
 
 ![Pending OCR](docs/backoffice_pending_ocr.png)
 
+### Backoffice — Review Queue (APPROVED)
+> Same dashboard filtered to APPROVED — auto-approved claims with CHF reimbursement amounts calculated by the rules engine.
+
+![Approved Claims](docs/backoffice_approved_ocr.png)
+
 ### Backoffice — Inline Approve / Reject
 > Expanding a flagged claim reveals the review panel: flagged reason, reviewer notes, and decision buttons.
 

@@ -1,7 +1,7 @@
 <div class="page-card">
 <div class="page-header">
   <div>
-    <h1>Hello, {{ authService.username() }}!</h1>
+    <h1>Hello, {{ authService.username() ?? 'there' }}!</h1>
     <p class="page-subtitle">Your submitted claims</p>
   </div>
   <button mat-raised-button color="primary" routerLink="/portal/submit">
