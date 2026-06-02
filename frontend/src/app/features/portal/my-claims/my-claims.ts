@@ -27,7 +27,7 @@ import { Claim } from '../../../core/api/models/claim.model';
 })
 export class MyClaims implements OnInit {
   private readonly claimsApi = inject(ClaimsApiService);
-  private readonly authService = inject(AuthService);
+  protected readonly authService = inject(AuthService);
 
   readonly claims = signal<Claim[]>([]);
   readonly loading = signal(true);

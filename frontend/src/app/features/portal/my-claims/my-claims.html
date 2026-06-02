@@ -1,5 +1,9 @@
+<div class="page-card">
 <div class="page-header">
-  <h1>My Claims</h1>
+  <div>
+    <h1>Hello, {{ authService.username() }}!</h1>
+    <p class="page-subtitle">Your submitted claims</p>
+  </div>
   <button mat-raised-button color="primary" routerLink="/portal/submit">
     <mat-icon>add</mat-icon>
     Submit New Claim
@@ -42,3 +46,4 @@
     <mat-row *matRowDef="let row; columns: displayedColumns" />
   </mat-table>
 }
+</div>
