@@ -48,7 +48,7 @@ function renderMyClaims({ policyHolderId = 'user-001', claims = [], apiError = f
   return render(MyClaims, {
     providers: [
       provideRouter([]),
-      { provide: AuthService, useValue: { policyHolderId } },
+      { provide: AuthService, useValue: { policyHolderId, username: () => 'Jose' } },
       { provide: ClaimsApiService, useValue: { getByPolicyHolder: vi.fn().mockReturnValue(claimsApi$) } },
     ],
   });

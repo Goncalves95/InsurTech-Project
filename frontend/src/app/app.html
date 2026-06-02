@@ -12,10 +12,12 @@
       </button>
     }
 
-    <button mat-button routerLink="/portal/claims">
-      <mat-icon>receipt_long</mat-icon>
-      My Claims
-    </button>
+    @if (!authService.isBackoffice()) {
+      <button mat-button routerLink="/portal/claims">
+        <mat-icon>receipt_long</mat-icon>
+        My Claims
+      </button>
+    }
 
     <button mat-icon-button (click)="authService.logout()" aria-label="Logout">
       <mat-icon>logout</mat-icon>

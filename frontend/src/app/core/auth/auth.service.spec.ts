@@ -12,8 +12,9 @@ const mockKcInstance = vi.hoisted(() => ({
   realmAccess: undefined as { roles: string[] } | undefined,
   token: undefined as string | undefined,
   login: vi.fn(),
-  logout: vi.fn(),
+  logout: vi.fn().mockResolvedValue(undefined),
   updateToken: vi.fn().mockResolvedValue(true),
+  loadUserProfile: vi.fn().mockResolvedValue({ firstName: undefined as string | undefined, username: undefined as string | undefined }),
 }));
 
 // The factory must use a regular function so it can be called with `new`.
@@ -35,6 +36,7 @@ describe('AuthService', () => {
     mockKcInstance.idTokenParsed = null;
     mockKcInstance.realmAccess = undefined;
     mockKcInstance.token = undefined;
+    mockKcInstance.loadUserProfile.mockResolvedValue({ firstName: undefined, username: undefined });
 
     TestBed.configureTestingModule({});
     service = TestBed.inject(AuthService);
@@ -69,10 +71,10 @@ describe('AuthService', () => {
   describe('after a successful init', () => {
     beforeEach(async () => {
       mockKcInstance.init.mockResolvedValue(true);
-      mockKcInstance.tokenParsed = { preferred_username: 'joao', sub: 'user-uuid-001' };
       mockKcInstance.idTokenParsed = { sub: 'user-uuid-001' };
       mockKcInstance.realmAccess = { roles: ['user', 'backoffice'] };
       mockKcInstance.subject = 'user-uuid-001';
+      mockKcInstance.loadUserProfile.mockResolvedValue({ firstName: 'joao', username: 'joao' });
       await service.init();
     });
 
@@ -80,7 +82,7 @@ describe('AuthService', () => {
       expect(service.authenticated()).toBe(true);
     });
 
-    it('sets username from the preferred_username claim', () => {
+    it('sets username from the user profile', () => {
       expect(service.username()).toBe('joao');
     });
 

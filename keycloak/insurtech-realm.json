@@ -86,9 +86,10 @@
   ],
   "users": [
     {
+      "id": "6a35eebc-9170-4d43-b468-37a7207ebab1",
       "username": "backoffice",
       "email": "backoffice@insurtech-demo.ch",
-      "firstName": "Backoffice",
+      "firstName": "Romen",
       "lastName": "Analyst",
       "enabled": true,
       "emailVerified": true,
@@ -104,9 +105,10 @@
       ]
     },
     {
+      "id": "d22c39e7-d4ac-45ca-b7b7-e6fc5d23c81b",
       "username": "customer",
       "email": "customer@insurtech-demo.ch",
-      "firstName": "Maria",
+      "firstName": "Jose",
       "lastName": "Muster",
       "enabled": true,
       "emailVerified": true,
