@@ -88,22 +88,27 @@ Platform capabilities at a glance:
 ### Customer Portal — My Claims
 > Policy holder view: submitted invoices with CHF reimbursement amounts and colour-coded status chips.
 
-![My Claims](docs/claims_customer.png)
+![My Claims](docs/customer_main_page.png)
 
 ### Submit a New Claim
 > PDF invoice upload form — the OCR + validation pipeline triggers automatically on submission.
 
-![Submit Claim](docs/submit_new_claim_dialog.png)
+![Submit Claim](docs/customer_upload_invoice_dialog.png)
 
-### Backoffice — Review Queue (MANUAL\_REVIEW\_REQUIRED)
-> Role-gated reviewer dashboard showing claims flagged by the rules engine for manual intervention.
+### Backoffice — Review Queue
+> Role-gated reviewer dashboard showing all claims. The button-toggle filter switches between pipeline states.
 
-![Review Queue](docs/review_queue_manual_review_required.png)
+![Review Queue](docs/backoffice_main_page.png)
+
+### Backoffice — Review Queue (PENDING OCR)
+> Same dashboard filtered to PENDING OCR — shows claims awaiting document extraction.
+
+![Pending OCR](docs/backoffice_pending_ocr.png)
 
 ### Backoffice — Inline Approve / Reject
-> Expanding a claim row reveals the review panel: flagged reason, reviewer notes, and decision buttons.
+> Expanding a flagged claim reveals the review panel: flagged reason, reviewer notes, and decision buttons.
 
-![Approve or Reject](docs/review_wueue_manual_review_aprove_or_reject.png)
+![Approve or Reject](docs/backoffice_validate_claim.png)
 
 ---
 
