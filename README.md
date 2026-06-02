@@ -95,6 +95,11 @@ Platform capabilities at a glance:
 
 ![Submit Claim](docs/customer_upload_invoice_dialog.png)
 
+### Backoffice — Operations Dashboard
+> Landing page for reviewers: real-time stat cards (total / auto-approved / needs review / in-pipeline / rejected), a claims pipeline bar chart across all 6 states, quick access to the review queue with a pending badge, and system status indicators.
+
+![Operations Dashboard](docs/backoffice_dashboard.png)
+
 ### Backoffice — Review Queue
 > Role-gated reviewer dashboard showing all claims. The button-toggle filter switches between pipeline states.
 
