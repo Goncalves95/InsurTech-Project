@@ -6,7 +6,7 @@
     <span class="username">{{ authService.username() }}</span>
 
     @if (authService.isBackoffice()) {
-      <button mat-button routerLink="/backoffice/review-queue">
+      <button mat-button routerLink="/backoffice/dashboard">
         <mat-icon>admin_panel_settings</mat-icon>
         Backoffice
       </button>
@@ -27,6 +27,21 @@
   }
 </mat-toolbar>
 
-<main class="content">
-  <router-outlet />
-</main>
+@if (authService.isBackoffice()) {
+  <nav class="backoffice-nav">
+    <a mat-button routerLink="/backoffice/dashboard" routerLinkActive="backoffice-nav__link--active">
+      <mat-icon>dashboard</mat-icon>
+      Dashboard
+    </a>
+    <a mat-button routerLink="/backoffice/review-queue" routerLinkActive="backoffice-nav__link--active">
+      <mat-icon>rate_review</mat-icon>
+      Review Queue
+    </a>
+  </nav>
+}
+
+<div class="canvas" [class.canvas--portal]="!authService.isBackoffice()">
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

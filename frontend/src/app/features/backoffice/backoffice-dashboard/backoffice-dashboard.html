@@ -1,0 +1,103 @@
+<div class="page-card">
+  <div class="dashboard-header">
+    <h1>Operations Dashboard</h1>
+    <p class="dashboard-subtitle">Claims pipeline overview</p>
+  </div>
+
+  @if (loading()) {
+    <div class="center">
+      <mat-progress-spinner mode="indeterminate" />
+    </div>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+  } @else {
+
+    <!-- Stat cards -->
+    <div class="stat-grid">
+      <div class="stat-card">
+        <span class="stat-value">{{ total() }}</span>
+        <span class="stat-label">Total Claims</span>
+      </div>
+      <div class="stat-card stat-card--approved">
+        <mat-icon>check_circle</mat-icon>
+        <span class="stat-value">{{ approved() }}</span>
+        <span class="stat-label">Auto-Approved</span>
+      </div>
+      <div class="stat-card stat-card--manual">
+        <mat-icon>rate_review</mat-icon>
+        <span class="stat-value">{{ pending() }}</span>
+        <span class="stat-label">Needs Review</span>
+      </div>
+      <div class="stat-card stat-card--pipeline">
+        <mat-icon>sync</mat-icon>
+        <span class="stat-value">{{ inPipeline() }}</span>
+        <span class="stat-label">In Pipeline</span>
+      </div>
+      <div class="stat-card stat-card--rejected">
+        <mat-icon>cancel</mat-icon>
+        <span class="stat-value">{{ rejected() }}</span>
+        <span class="stat-label">Rejected</span>
+      </div>
+    </div>
+
+    <!-- Charts + side panel -->
+    <div class="dashboard-body">
+
+      <!-- Pipeline bar chart -->
+      <div class="inner-card pipeline-card">
+        <h3 class="inner-title">Claims Pipeline</h3>
+        @for (bar of bars(); track bar.label) {
+          <div class="bar-row">
+            <span class="bar-label">{{ bar.label }}</span>
+            <div class="bar-track">
+              <div class="bar-fill bar-fill--{{ bar.cls }}"
+                   [style.width.%]="bar.pct"
+                   [style.min-width]="bar.count > 0 ? '4px' : '0'">
+              </div>
+            </div>
+            <span class="bar-count">{{ bar.count }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Side panel -->
+      <div class="side-column">
+
+        <!-- Quick action -->
+        <div class="inner-card actions-card">
+          <h3 class="inner-title">Quick Actions</h3>
+          <a mat-stroked-button routerLink="/backoffice/review-queue" class="action-btn">
+            <mat-icon>rate_review</mat-icon>
+            Open Review Queue
+            @if (pending() > 0) {
+              <span class="badge">{{ pending() }}</span>
+            }
+          </a>
+        </div>
+
+        <!-- System status -->
+        <div class="inner-card system-card">
+          <h3 class="inner-title">System Status</h3>
+          <div class="system-row">
+            <mat-icon class="icon-ok">check_circle</mat-icon>
+            <span>Rules Engine</span>
+          </div>
+          <div class="system-row">
+            <mat-icon class="icon-ok">check_circle</mat-icon>
+            <span>Event Bus (Kafka)</span>
+          </div>
+          <div class="system-row">
+            <mat-icon class="icon-ok">check_circle</mat-icon>
+            <span>OCR — Azure Document Intelligence</span>
+          </div>
+          <div class="system-row">
+            <mat-icon class="icon-ok">check_circle</mat-icon>
+            <span>Notifications — SendGrid</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  }
+</div>

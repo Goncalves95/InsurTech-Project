@@ -1,0 +1,173 @@
+.dashboard-header {
+  margin-bottom: 24px;
+
+  h1 { margin: 0 0 2px; }
+}
+
+.dashboard-subtitle {
+  margin: 0;
+  font-size: 14px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  padding: 48px;
+}
+
+.error {
+  color: var(--mat-sys-error);
+}
+
+// ── Stat cards ──────────────────────────────────────────────────────────────
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.stat-card {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+  }
+
+  &--approved mat-icon { color: #1e7e34; }
+  &--manual   mat-icon { color: #e65100; }
+  &--pipeline mat-icon { color: #1565c0; }
+  &--rejected mat-icon { color: #c5221f; }
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--mat-sys-on-surface);
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// ── Dashboard body: pipeline chart + side panel ──────────────────────────────
+
+.dashboard-body {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 16px;
+}
+
+.inner-card {
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 10px;
+  padding: 20px;
+}
+
+.inner-title {
+  margin: 0 0 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+}
+
+// ── Pipeline bar chart ───────────────────────────────────────────────────────
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+
+  &:last-child { margin-bottom: 0; }
+}
+
+.bar-label {
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+  width: 140px;
+  flex-shrink: 0;
+}
+
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: var(--mat-sys-surface-variant);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 0.4s ease;
+
+  &--approved   { background: #1e7e34; }
+  &--manual     { background: #e65100; }
+  &--rejected   { background: #c5221f; }
+  &--processing { background: #6a1b9a; }
+  &--validation { background: #1565c0; }
+  &--default    { background: #5f6368; }
+}
+
+.bar-count {
+  font-size: 13px;
+  font-weight: 600;
+  width: 24px;
+  text-align: right;
+  color: var(--mat-sys-on-surface);
+}
+
+// ── Side panel ───────────────────────────────────────────────────────────────
+
+.side-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.action-btn {
+  width: 100%;
+  justify-content: flex-start !important;
+  position: relative;
+}
+
+.badge {
+  margin-left: auto;
+  background: #e65100;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 10px;
+  padding: 1px 7px;
+}
+
+.system-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+  padding: 4px 0;
+}
+
+.icon-ok {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #1e7e34;
+  flex-shrink: 0;
+}

@@ -14,6 +14,36 @@
   opacity: 0.9;
 }
 
+.backoffice-nav {
+  background: var(--mat-sys-surface-container);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  padding: 0 16px;
+  display: flex;
+  gap: 4px;
+
+  a {
+    border-radius: 0;
+    opacity: 0.7;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
+
+    &.backoffice-nav__link--active {
+      opacity: 1;
+      border-bottom-color: var(--mat-sys-primary);
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+.canvas {
+  min-height: calc(100vh - 64px); // 64px = mat-toolbar height
+  background-color: var(--mat-sys-surface-container-low); // backoffice: neutral gray
+
+  &.canvas--portal {
+    background-color: color-mix(in srgb, var(--mat-sys-primary) 8%, white); // portal: blue tint from theme
+  }
+}
+
 .content {
   padding: 32px 24px;
   max-width: 1200px;
